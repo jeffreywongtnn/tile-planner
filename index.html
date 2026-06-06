@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>浴室磁磚計畫 v2</title>
+<title>浴室磁磚計畫 v3</title>
 <style>
 :root {
   --bg:#f0f2f5; --surface:#fff; --surface2:#f5f6f8; --surface3:#eaecf0;
@@ -136,6 +136,7 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
   <div class="topbar-actions">
     <button class="btn" id="themeBtn">🌙 深色</button>
     <button class="btn" id="caseInfoBtn">📋 案件資訊</button>
+    <button class="btn btn-primary" id="saveLoadBtn">💾 儲存/載入</button>
     <button class="btn btn-primary" id="exportPdfBtn">匯出 PDF</button>
     <button class="btn" id="exportPngBtn">匯出 PNG</button>
     <button class="btn" id="exportSvgBtn">匯出 SVG</button>
@@ -335,7 +336,6 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
       <button class="btn btn-sm" id="addWindow">+ 加窗</button>
       <button class="btn btn-sm" id="addThreshold">+ 門檻</button>
       <button class="btn btn-sm" id="addDrain">+ 地排</button>
-      <button class="btn btn-sm" id="addPipe">+ 管道間</button>
       <button class="btn btn-sm btn-danger" id="deleteSelectedBtn" style="display:none;margin-left:auto">🗑 刪除選取</button>
       <button class="btn btn-sm" id="cancelSelectBtn" style="display:none">取消</button>
     </div>
@@ -460,6 +460,92 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
   </div>
 </div>
 
+<!-- DOOR MODAL -->
+<div class="modal-overlay" id="doorModal">
+  <div class="modal">
+    <div class="modal-title" id="doorModalTitle">🚪 門設定</div>
+    <div class="form-row"><span class="form-label" style="min-width:60px">開口寬</span><input class="form-input form-input-num" id="doorWidth" type="number" value="90" min="30" max="300"><span class="form-unit">cm</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">門片厚</span><input class="form-input form-input-num" id="doorLeafThick" type="number" value="4" min="1" max="10"><span class="form-unit">cm（繪於牆內貼齊粘劑面）</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">所在牆</span>
+      <select class="form-input" id="doorWall">
+        <option value="1">W1（下）</option>
+        <option value="2">W2（左）</option>
+        <option value="3">W3（上）</option>
+        <option value="4">W4（右）</option>
+      </select>
+    </div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">位置</span><input class="form-input form-input-num" id="doorPos" type="number" value="0" min="0"><span class="form-unit">cm（從牆左/下起算）</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">開啟方向</span>
+      <select class="form-input" id="doorSwing">
+        <option value="cw">順時針（向右開）</option>
+        <option value="ccw">逆時針（向左開）</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="doorModalCancel">取消</button>
+      <button class="btn btn-primary" id="doorModalApply">加入</button>
+    </div>
+  </div>
+</div>
+
+<!-- WINDOW MODAL -->
+<div class="modal-overlay" id="windowModal">
+  <div class="modal">
+    <div class="modal-title">🪟 窗設定</div>
+    <div class="form-row"><span class="form-label" style="min-width:60px">開口寬</span><input class="form-input form-input-num" id="winWidth" type="number" value="90" min="20" max="300"><span class="form-unit">cm</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">窗台高</span><input class="form-input form-input-num" id="winSill" type="number" value="80" min="0" max="250"><span class="form-unit">cm（地面起算）</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">窗高</span><input class="form-input form-input-num" id="winHeight" type="number" value="120" min="10" max="250"><span class="form-unit">cm</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">所在牆</span>
+      <select class="form-input" id="winWall">
+        <option value="1">W1（下）</option>
+        <option value="2">W2（左）</option>
+        <option value="3">W3（上）</option>
+        <option value="4">W4（右）</option>
+      </select>
+    </div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">位置</span><input class="form-input form-input-num" id="winPos" type="number" value="0" min="0"><span class="form-unit">cm（從牆左/下起算）</span></div>
+    <div class="modal-footer">
+      <button class="btn" id="winModalCancel">取消</button>
+      <button class="btn btn-primary" id="winModalApply">加入</button>
+    </div>
+  </div>
+</div>
+
+<!-- DRAIN MODAL -->
+<div class="modal-overlay" id="drainModal">
+  <div class="modal">
+    <div class="modal-title">🕳️ 地排設定</div>
+    <div class="form-row"><span class="form-label" style="min-width:60px">X 位置</span><input class="form-input form-input-num" id="drainX" type="number" value="50" min="0"><span class="form-unit">cm（從左牆起算）</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">Y 位置</span><input class="form-input form-input-num" id="drainY" type="number" value="50" min="0"><span class="form-unit">cm（從下牆起算）</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">尺寸</span><input class="form-input form-input-num" id="drainSize" type="number" value="15" min="5" max="50"><span class="form-unit">cm</span></div>
+    <div class="modal-footer">
+      <button class="btn" id="drainModalCancel">取消</button>
+      <button class="btn btn-primary" id="drainModalApply">加入</button>
+    </div>
+  </div>
+</div>
+
+<!-- SAVE/LOAD MODAL -->
+<div class="modal-overlay" id="saveModal">
+  <div class="modal">
+    <div class="modal-title">💾 專案儲存 / 載入</div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600">已儲存的專案</div>
+      <div id="savedProjectList" style="max-height:200px;overflow-y:auto;border:1px solid var(--border2);border-radius:6px;padding:4px"></div>
+    </div>
+    <div style="border-top:1px solid var(--border2);padding-top:12px">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600">儲存目前狀態</div>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="saveProjectName" placeholder="專案名稱（如：101室浴室）" style="flex:1">
+        <button class="btn btn-primary" id="saveProjectBtn">儲存</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="saveModalClose">關閉</button>
+    </div>
+  </div>
+</div>
+
 <div class="notif" id="notif"></div>
 
 <script>
@@ -472,7 +558,7 @@ const state = {
   floorTile:{ model:'', w:200, h:200, grout:3, groutModel:'' },
   floorLayout:'align', wallLayout:'align',
   offset:{ x:0, y:0, w1:2, w2:0, w3:0, w4:0, all:0 },
-  openings:[],
+  openings:[], // {type,wall,pos,width,height,swing,leafThick,sill,drainX,drainY,size}
   threshold:null,
   columns:{ enabled:false, tl:{w:0,d:0}, tr:{w:0,d:0}, bl:{w:0,d:0}, br:{w:0,d:0} },
   fixtures:[],        // library: {id, name, imgData, defW, defD}
@@ -549,7 +635,8 @@ function getColumns(){
   return state.columns;
 }
 
-// Returns array of {x,y,w,h} in cm — column footprints (untiled)
+// Returns column rects in ROOM coords (including wall buildup space)
+// Columns also have buildup on their exposed inner faces
 function getColumnRects(){
   const cols=getColumns();
   const {W,D}=state.room;
@@ -558,6 +645,19 @@ function getColumnRects(){
   if(cols.tr.w>0&&cols.tr.d>0) rects.push({x:W-cols.tr.w,y:0,w:cols.tr.w,h:cols.tr.d,corner:'tr'});
   if(cols.bl.w>0&&cols.bl.d>0) rects.push({x:0,y:D-cols.bl.d,w:cols.bl.w,h:cols.bl.d,corner:'bl'});
   if(cols.br.w>0&&cols.br.d>0) rects.push({x:W-cols.br.w,y:D-cols.br.d,w:cols.br.w,h:cols.br.d,corner:'br'});
+  return rects;
+}
+// Net-space column rects (offset by buildup); also expand by buildup on inner edges
+function getColumnRectsNet(buildup){
+  const cols=getColumns();
+  const {netW,netD}=getNetDims();
+  const b=buildup;
+  const rects=[];
+  // Each corner column: subtract buildup from origin, add buildup width on inner faces
+  if(cols.tl.w>0&&cols.tl.d>0) rects.push({x:0,y:0,w:cols.tl.w-b+b,h:cols.tl.d-b+b,corner:'tl'});
+  if(cols.tr.w>0&&cols.tr.d>0) rects.push({x:netW-(cols.tr.w),y:0,w:cols.tr.w,h:cols.tr.d-b,corner:'tr'});
+  if(cols.bl.w>0&&cols.bl.d>0) rects.push({x:0,y:netD-(cols.bl.d),w:cols.bl.w-b,h:cols.bl.d,corner:'bl'});
+  if(cols.br.w>0&&cols.br.d>0) rects.push({x:netW-(cols.br.w),y:netD-(cols.br.d),w:cols.br.w,h:cols.br.d,corner:'br'});
   return rects;
 }
 
@@ -575,12 +675,9 @@ function tileOverlapsColumn(tx,ty,tw,th){
 const floorCanvas=$('floorCanvas');
 const fCtx=floorCanvas.getContext('2d');
 
-// Helper: column overlap check in net coords
 function tileOverlapsColumnNet(rx,ry,tw,th,buildup){
-  for(const c of getColumnRects()){
-    // column rects are in room coords; convert to net coords by subtracting buildup
-    const cx=c.x-buildup, cy=c.y-buildup;
-    if(rx<cx+c.w && rx+tw>cx && ry<cy+c.h && ry+th>cy) return true;
+  for(const c of getColumnRectsNet(buildup)){
+    if(rx<c.x+c.w && rx+tw>c.x && ry<c.y+c.h && ry+th>c.y) return true;
   }
   return false;
 }
@@ -612,7 +709,7 @@ function drawWallBuildup(sc,ox,oy,W,D,bsc){
   });
   // wall labels inside strips if wide enough
   if(bsc>14){
-    fCtx.fillStyle='rgba(30,50,120,0.75)'; fCtx.font=`bold ${Math.min(10,bsc*.55)}px sans-serif`; fCtx.textAlign='center'; fCtx.textBaseline='middle';
+    fCtx.fillStyle='rgba(30,50,120,0.85)'; fCtx.font=`bold ${Math.min(14,Math.max(9,bsc*.55))}px sans-serif`; fCtx.textAlign='center'; fCtx.textBaseline='middle';
     fCtx.fillText('磚+粘',ox+W*sc/2,oy+bsc/2);
     fCtx.fillText('磚+粘',ox+W*sc/2,oy+D*sc-bsc/2);
     fCtx.save(); fCtx.translate(ox+bsc/2,oy+D*sc/2); fCtx.rotate(-Math.PI/2); fCtx.fillText('磚+粘',0,0); fCtx.restore();
@@ -688,16 +785,30 @@ function drawFloor(){
   fCtx.strokeStyle='rgba(26,106,245,.5)'; fCtx.lineWidth=1; fCtx.setLineDash([4,3]);
   fCtx.strokeRect(floorX,floorY,floorW,floorH); fCtx.setLineDash([]);
 
-  // columns
+  // columns (drawn in room coords; includes buildup on all sides)
   for(const col of getColumnRects()){
     const cpx=ox+col.x*sc, cpy=oy+col.y*sc, cpw=col.w*sc, cph=col.h*sc;
+    // Main column body (structural)
     fCtx.save(); fCtx.beginPath(); fCtx.rect(cpx,cpy,cpw,cph); fCtx.clip();
     fCtx.fillStyle='#8a95a8'; fCtx.fillRect(cpx,cpy,cpw,cph);
-    fCtx.strokeStyle='rgba(0,0,0,.15)'; fCtx.lineWidth=1;
-    for(let i=-cpw;i<cpw+cph;i+=8){fCtx.beginPath();fCtx.moveTo(cpx+i,cpy);fCtx.lineTo(cpx+i+cph,cpy+cph);fCtx.stroke();}
+    fCtx.strokeStyle='rgba(0,0,0,.18)'; fCtx.lineWidth=1;
+    for(let i=-cpw;i<cpw+cph;i+=7){fCtx.beginPath();fCtx.moveTo(cpx+i,cpy);fCtx.lineTo(cpx+i+cph,cpy+cph);fCtx.stroke();}
     fCtx.restore();
-    fCtx.strokeStyle='#445'; fCtx.lineWidth=2; fCtx.strokeRect(cpx,cpy,cpw,cph);
-    fCtx.fillStyle='rgba(0,0,0,.7)'; fCtx.font=`bold ${Math.min(11,Math.min(cpw,cph)*.4)}px sans-serif`;
+    // Buildup strips on inner (exposed) faces of column
+    const innerFaces=[];
+    if(col.corner==='tl'){innerFaces.push({x:cpx+cpw,y:cpy,w:bsc,h:cph},{x:cpx,y:cpy+cph,w:cpw+bsc,h:bsc});}
+    else if(col.corner==='tr'){innerFaces.push({x:cpx-bsc,y:cpy,w:bsc,h:cph},{x:cpx-bsc,y:cpy+cph,w:cpw+bsc,h:bsc});}
+    else if(col.corner==='bl'){innerFaces.push({x:cpx+cpw,y:cpy,w:bsc,h:cph},{x:cpx,y:cpy-bsc,w:cpw+bsc,h:bsc});}
+    else if(col.corner==='br'){innerFaces.push({x:cpx-bsc,y:cpy,w:bsc,h:cph},{x:cpx-bsc,y:cpy-bsc,w:cpw+bsc,h:bsc});}
+    innerFaces.forEach(f=>{
+      fCtx.save(); fCtx.beginPath(); fCtx.rect(f.x,f.y,f.w,f.h); fCtx.clip();
+      fCtx.fillStyle='rgba(80,100,140,0.30)'; fCtx.fillRect(f.x,f.y,f.w,f.h);
+      fCtx.strokeStyle='rgba(60,80,130,0.2)'; fCtx.lineWidth=0.8;
+      for(let i=-f.w;i<f.w+f.h;i+=7){fCtx.beginPath();fCtx.moveTo(f.x+i,f.y);fCtx.lineTo(f.x+i+f.h,f.y+f.h);fCtx.stroke();}
+      fCtx.restore();
+    });
+    fCtx.strokeStyle='#334'; fCtx.lineWidth=2.5; fCtx.strokeRect(cpx,cpy,cpw,cph);
+    fCtx.fillStyle='rgba(0,0,0,.85)'; fCtx.font=`bold ${Math.min(18,Math.max(12,Math.min(cpw,cph)*.5))}px sans-serif`;
     fCtx.textAlign='center'; fCtx.textBaseline='middle'; fCtx.fillText('柱',cpx+cpw/2,cpy+cph/2);
   }
 
@@ -714,43 +825,136 @@ function drawFloor(){
 }
 
 function drawOpeningsOnFloor(sc,ox,oy,floorX,floorY,buildup){
-  // Openings are in net coords relative to floorX/floorY
   const {netW,netD}=getNetDims();
+  const bsc=buildup*sc; // wall buildup in px
+  const FONT_SCALE=2.4; // font size multiplier per spec
+
   state.openings.forEach((op,i)=>{
     const isSel=selectedItem&&selectedItem.type==='opening'&&selectedItem.idx===i;
-    let bx,by,bw,bh;
-    if(op.wall===1||op.wall===3){
-      bx=op.pos; by=(op.wall===1?netD-op.height:0); bw=op.width; bh=op.height;
-    } else {
-      by=op.pos; bx=(op.wall===2?0:netW-op.height); bw=op.height; bh=op.width;
-    }
-    const px=floorX+bx*sc, py=floorY+by*sc, pw=bw*sc, ph=bh*sc;
-    if(op.type==='door'||op.type==='door75'){
-      fCtx.fillStyle='rgba(220,235,255,.7)'; fCtx.fillRect(px,py,pw,ph);
-      fCtx.strokeStyle=isSel?'#e03030':'#3a5a9a'; fCtx.lineWidth=isSel?2.5:1.5; fCtx.strokeRect(px,py,pw,ph);
-      fCtx.beginPath();
-      if(op.wall===1){fCtx.moveTo(px,py+ph);fCtx.arc(px,py+ph,pw,-Math.PI/2,0);}
-      else if(op.wall===3){fCtx.moveTo(px,py);fCtx.arc(px,py,pw,0,Math.PI/2);}
-      else if(op.wall===2){fCtx.moveTo(px,py);fCtx.arc(px,py,ph,0,Math.PI/2);}
-      else{fCtx.moveTo(px+pw,py);fCtx.arc(px+pw,py,ph,Math.PI/2,Math.PI);}
-      fCtx.strokeStyle='rgba(70,120,200,.5)'; fCtx.setLineDash([3,2]); fCtx.lineWidth=1; fCtx.stroke(); fCtx.setLineDash([]);
-    } else if(op.type==='window'){
-      fCtx.fillStyle='rgba(180,210,240,.8)'; fCtx.fillRect(px,py,pw,ph);
-      fCtx.strokeStyle=isSel?'#e03030':'#2a608a'; fCtx.lineWidth=isSel?2.5:1.5; fCtx.strokeRect(px,py,pw,ph);
-    } else if(op.type==='drain'){
-      fCtx.fillStyle='#666'; fCtx.beginPath(); fCtx.arc(floorX+bx*sc,floorY+by*sc,Math.max(4,8*sc/2),0,Math.PI*2); fCtx.fill();
-      fCtx.strokeStyle='#333'; fCtx.lineWidth=1; fCtx.stroke();
-    } else if(op.type==='pipe'){
-      fCtx.fillStyle='rgba(210,195,155,.85)'; fCtx.fillRect(px,py,pw,ph);
-      fCtx.strokeStyle=isSel?'#e03030':'#8a7040'; fCtx.lineWidth=isSel?2.5:1.5; fCtx.strokeRect(px,py,pw,ph);
-    }
-    if(op.type!=='drain'){
-      fCtx.fillStyle='rgba(30,40,80,.8)'; fCtx.font=`${Math.max(9,Math.min(pw,ph)*.3)}px sans-serif`;
+
+    // DRAIN: position is absolute in net space
+    if(op.type==='drain'){
+      const cx=floorX+(op.drainX||op.pos)*sc;
+      const cy=floorY+(op.drainY||op.pos)*sc;
+      const r=Math.max(6,(op.width||15)*sc/2);
+      fCtx.fillStyle='#555';
+      fCtx.beginPath(); fCtx.arc(cx,cy,r,0,Math.PI*2); fCtx.fill();
+      fCtx.strokeStyle=isSel?'#e03030':'#222'; fCtx.lineWidth=isSel?3:1.5; fCtx.stroke();
+      // cross lines
+      fCtx.strokeStyle='rgba(255,255,255,.7)'; fCtx.lineWidth=1;
+      fCtx.beginPath(); fCtx.moveTo(cx-r*.7,cy); fCtx.lineTo(cx+r*.7,cy); fCtx.stroke();
+      fCtx.beginPath(); fCtx.moveTo(cx,cy-r*.7); fCtx.lineTo(cx,cy+r*.7); fCtx.stroke();
+      fCtx.fillStyle='#fff'; fCtx.font=`bold ${Math.max(10,r*.7)}px sans-serif`;
       fCtx.textAlign='center'; fCtx.textBaseline='middle';
-      fCtx.fillText(op.type==='window'?'窗':op.type==='pipe'?'管':op.width+'',px+pw/2,py+ph/2);
+      fCtx.fillText('排',cx,cy);
+      return;
     }
+
+    // Openings sit IN the wall buildup strip, not protruding into room
+    // Wall 1 = bottom, Wall 3 = top (horizontal walls)
+    // Wall 2 = left, Wall 4 = right (vertical walls)
+    let px,py,pw,ph;
+    const opW=op.width*sc;
+    if(op.wall===1){
+      // bottom wall: opening cuts through bottom buildup strip
+      px = floorX + op.pos*sc;
+      py = floorY + netD*sc; // at net floor bottom = top of W1 strip
+      pw = opW;
+      ph = bsc; // wall thickness
+    } else if(op.wall===3){
+      // top wall
+      px = floorX + op.pos*sc;
+      py = oy; // top of room
+      pw = opW;
+      ph = bsc;
+    } else if(op.wall===2){
+      // left wall
+      px = ox;
+      py = floorY + op.pos*sc;
+      pw = bsc;
+      ph = opW;
+    } else { // wall 4
+      // right wall
+      px = floorX + netW*sc;
+      py = floorY + op.pos*sc;
+      pw = bsc;
+      ph = opW;
+    }
+
+    if(op.type==='window'){
+      fCtx.fillStyle='rgba(180,215,245,.9)';
+      fCtx.fillRect(px,py,pw,ph);
+      fCtx.strokeStyle=isSel?'#e03030':'#2a608a'; fCtx.lineWidth=isSel?2.5:2;
+      fCtx.strokeRect(px,py,pw,ph);
+      // window lines
+      fCtx.strokeStyle='rgba(42,96,138,.6)'; fCtx.lineWidth=1;
+      if(op.wall===1||op.wall===3){
+        fCtx.beginPath(); fCtx.moveTo(px+pw*.5,py); fCtx.lineTo(px+pw*.5,py+ph); fCtx.stroke();
+      } else {
+        fCtx.beginPath(); fCtx.moveTo(px,py+ph*.5); fCtx.lineTo(px+pw,py+ph*.5); fCtx.stroke();
+      }
+      fCtx.fillStyle='rgba(20,60,120,.85)';
+      fCtx.font=`bold ${Math.max(11,Math.min(pw,ph)*FONT_SCALE*.25)}px sans-serif`;
+      fCtx.textAlign='center'; fCtx.textBaseline='middle';
+      fCtx.fillText('窗',px+pw/2,py+ph/2);
+
+    } else if(op.type==='door'||op.type==='door75'){
+      // Opening: clear the wall strip (white gap)
+      fCtx.fillStyle='rgba(240,245,255,.95)';
+      fCtx.fillRect(px,py,pw,ph);
+      fCtx.strokeStyle=isSel?'#e03030':'rgba(30,60,160,.5)';
+      fCtx.lineWidth=isSel?2:1; fCtx.strokeRect(px,py,pw,ph);
+
+      // Door leaf: inside net area, flush with adhesive face of wall
+      const lt=(op.leafThick||4)*sc;
+      let lpx,lpy,lpw,lph;
+      if(op.wall===1){
+        lpx=px; lpy=floorY+netD*sc-lt; lpw=pw; lph=lt;
+      } else if(op.wall===3){
+        lpx=px; lpy=floorY; lpw=pw; lph=lt;
+      } else if(op.wall===2){
+        lpx=floorX; lpy=py; lpw=lt; lph=ph;
+      } else {
+        lpx=floorX+netW*sc-lt; lpy=py; lpw=lt; lph=ph;
+      }
+      fCtx.fillStyle='rgba(160,130,90,.85)';
+      fCtx.fillRect(lpx,lpy,lpw,lph);
+      fCtx.strokeStyle='#7a5a20'; fCtx.lineWidth=1.5;
+      fCtx.strokeRect(lpx,lpy,lpw,lph);
+
+      // Door swing arc from hinge corner
+      const swing=op.swing||'cw';
+      const arcR=(op.wall===1||op.wall===3)?opW:opW;
+      fCtx.beginPath();
+      fCtx.strokeStyle='rgba(100,140,200,.55)'; fCtx.lineWidth=1.2; fCtx.setLineDash([4,3]);
+      if(op.wall===1){
+        const hx=swing==='cw'?px:px+pw;
+        const hy=floorY+netD*sc;
+        fCtx.moveTo(hx,hy); fCtx.arc(hx,hy,opW,swing==='cw'?-Math.PI/2:-Math.PI/2+Math.PI/2,swing==='cw'?0:-Math.PI);
+      } else if(op.wall===3){
+        const hx=swing==='cw'?px+pw:px;
+        const hy=floorY;
+        fCtx.moveTo(hx,hy); fCtx.arc(hx,hy,opW,swing==='ccw'?Math.PI/2:Math.PI/2,swing==='ccw'?Math.PI:0);
+      } else if(op.wall===2){
+        const hx=floorX;
+        const hy=swing==='cw'?py:py+ph;
+        fCtx.moveTo(hx,hy); fCtx.arc(hx,hy,opW,swing==='cw'?0:Math.PI,swing==='cw'?Math.PI/2:-Math.PI/2);
+      } else {
+        const hx=floorX+netW*sc;
+        const hy=swing==='ccw'?py:py+ph;
+        fCtx.moveTo(hx,hy); fCtx.arc(hx,hy,opW,swing==='ccw'?Math.PI:0,swing==='ccw'?Math.PI/2:-Math.PI/2);
+      }
+      fCtx.stroke(); fCtx.setLineDash([]);
+
+      // label
+      fCtx.fillStyle='rgba(20,40,100,.85)';
+      fCtx.font=`bold ${Math.max(11,Math.min(pw,ph)*FONT_SCALE*.25)}px sans-serif`;
+      fCtx.textAlign='center'; fCtx.textBaseline='middle';
+      fCtx.fillText(op.width+'',px+pw/2,py+ph/2);
+    }
+
     if(isSel){
-      fCtx.strokeStyle='rgba(224,80,80,.5)'; fCtx.lineWidth=6; fCtx.setLineDash([4,3]);
+      fCtx.strokeStyle='rgba(224,80,80,.6)'; fCtx.lineWidth=5; fCtx.setLineDash([5,3]);
       fCtx.strokeRect(px-2,py-2,pw+4,ph+4); fCtx.setLineDash([]);
     }
   });
@@ -758,13 +962,28 @@ function drawOpeningsOnFloor(sc,ox,oy,floorX,floorY,buildup){
 
 function drawThresholdOnFloor(sc,floorX,floorY,netW,netD){
   const t=state.threshold;
+  const {buildup}=getNetDims();
+  const bsc=buildup*sc;
   const left=t.left||0, wid=t.width||6;
   const w=netW-(t.left||0)-(t.right||0);
-  const py=floorY+(netD-wid)*sc;
-  fCtx.fillStyle='#c9a96e'; fCtx.fillRect(floorX+left*sc,py,w*sc,wid*sc);
-  fCtx.strokeStyle='#a07040'; fCtx.lineWidth=1.5; fCtx.strokeRect(floorX+left*sc,py,w*sc,wid*sc);
-  fCtx.fillStyle='rgba(0,0,0,.7)'; fCtx.font='10px sans-serif'; fCtx.textAlign='center'; fCtx.textBaseline='middle';
-  fCtx.fillText(`門檻 ${wid}cm`,floorX+left*sc+w*sc/2,py+wid*sc/2);
+  // Threshold sits in W1 wall strip, butted against door leaf outer face
+  // i.e., at bottom of net area going into wall strip
+  const doorLeafThick = (()=>{
+    const d=state.openings.find(op=>(op.type==='door'||op.type==='door75')&&op.wall===1);
+    return d?d.leafThick||4:0;
+  })();
+  // Threshold: from outer face of door leaf toward outside
+  // In plan: drawn just outside net area (in W1 strip), width = threshold width, height = wid
+  const py=floorY+netD*sc; // start of W1 strip
+  const ty=py+doorLeafThick*sc; // after door leaf
+  const tw2=Math.min(wid*sc, bsc-doorLeafThick*sc);
+  fCtx.fillStyle='#c9a96e';
+  fCtx.fillRect(floorX+left*sc, ty, w*sc, Math.max(tw2,2));
+  fCtx.strokeStyle='#a07040'; fCtx.lineWidth=1.5;
+  fCtx.strokeRect(floorX+left*sc, ty, w*sc, Math.max(tw2,2));
+  fCtx.fillStyle='rgba(0,0,0,.75)'; fCtx.font=`bold ${Math.max(10,Math.min(w*sc*.08,13))}px sans-serif`;
+  fCtx.textAlign='center'; fCtx.textBaseline='middle';
+  fCtx.fillText(`門檻 ${wid}cm`,floorX+left*sc+w*sc/2,ty+Math.max(tw2,2)/2);
 }
 
 function drawPlacedFixtures(sc,floorX,floorY){
@@ -793,9 +1012,9 @@ function drawPlacedFixtures(sc,floorX,floorY){
 
 function drawFloorDims(sc,ox,oy,W,D,PAD,netW,netD,buildup){
   const bsc=buildup*sc;
-  fCtx.fillStyle='#445'; fCtx.font='10px sans-serif'; fCtx.textAlign='center';
+  fCtx.fillStyle='#445'; fCtx.font='bold 13px sans-serif'; fCtx.textAlign='center';
   // outer room dims
-  fCtx.fillText(`${W} cm`,ox+W*sc/2,oy+D*sc+13);
+  fCtx.fillText(`${W} cm`,ox+W*sc/2,oy+D*sc+15);
   fCtx.save(); fCtx.translate(ox+W*sc+15,oy+D*sc/2); fCtx.rotate(Math.PI/2);
   fCtx.fillText(`${D} cm`,0,0); fCtx.restore();
   // net dims (smaller, blue)
@@ -804,11 +1023,11 @@ function drawFloorDims(sc,ox,oy,W,D,PAD,netW,netD,buildup){
   fCtx.save(); fCtx.translate(ox+bsc+netW*sc+11,oy+bsc+netD*sc/2); fCtx.rotate(Math.PI/2);
   fCtx.fillText(`淨 ${netD.toFixed(1)}`,0,0); fCtx.restore();
   // wall labels
-  fCtx.font='bold 11px sans-serif'; fCtx.fillStyle='#2244aa';
-  fCtx.fillText('W3',ox+W*sc/2,oy-14);
-  fCtx.fillText('W1',ox+W*sc/2,oy+D*sc+24);
-  fCtx.save(); fCtx.translate(ox-14,oy+D*sc/2); fCtx.rotate(-Math.PI/2); fCtx.fillText('W2',0,0); fCtx.restore();
-  fCtx.save(); fCtx.translate(ox+W*sc+27,oy+D*sc/2); fCtx.rotate(Math.PI/2); fCtx.fillText('W4',0,0); fCtx.restore();
+  fCtx.font='bold 16px sans-serif'; fCtx.fillStyle='#1a3388';
+  fCtx.fillText('W3',ox+W*sc/2,oy-16);
+  fCtx.fillText('W1',ox+W*sc/2,oy+D*sc+28);
+  fCtx.save(); fCtx.translate(ox-18,oy+D*sc/2); fCtx.rotate(-Math.PI/2); fCtx.fillText('W2',0,0); fCtx.restore();
+  fCtx.save(); fCtx.translate(ox+W*sc+32,oy+D*sc/2); fCtx.rotate(Math.PI/2); fCtx.fillText('W4',0,0); fCtx.restore();
 }
 
 // ============================
@@ -890,15 +1109,15 @@ function drawWallExpand(){
       const opPw=op.width*SC, opPy=py+pH-opPh;
       wCtx.fillStyle='rgba(195,215,240,.85)'; wCtx.fillRect(opPx,opPy,opPw,opPh);
       wCtx.strokeStyle='#3a6aa0'; wCtx.lineWidth=1.5; wCtx.strokeRect(opPx,opPy,opPw,opPh);
-      wCtx.fillStyle='#3a6aa0'; wCtx.font='9px sans-serif'; wCtx.textAlign='center'; wCtx.textBaseline='middle';
+      wCtx.fillStyle='#1a4080'; wCtx.font='bold 13px sans-serif'; wCtx.textAlign='center'; wCtx.textBaseline='middle';
       wCtx.fillText(op.type==='window'?'窗':'門',opPx+opPw/2,opPy+opPh/2);
     });
 
     wCtx.restore();
 
     wCtx.strokeStyle='#1a3a88'; wCtx.lineWidth=2; wCtx.strokeRect(px,py,pW,pH);
-    wCtx.fillStyle='#1a3a88'; wCtx.font='bold 11px sans-serif'; wCtx.textAlign='center';
-    wCtx.fillText(wall.label,px+pW/2,py-8);
+    wCtx.fillStyle='#1a3a88'; wCtx.font='bold 14px sans-serif'; wCtx.textAlign='center';
+    wCtx.fillText(wall.label,px+pW/2,py-9);
     wCtx.fillStyle='#555'; wCtx.font='9px sans-serif';
     wCtx.fillText(`原始:${[W,D,W,D][wi]}cm 佔${buildup.toFixed(1)}×2`,px+pW/2,py+pH+12);
     wCtx.fillText(`高:${wallH}cm`,px+pW/2,py+pH+24);
@@ -934,12 +1153,20 @@ function getCanvasXY(e){
 }
 
 function hitTestOpening(cx,cy){
-  const {netW,netD}=getNetDims();
+  const {netW,netD,buildup}=getNetDims();
   for(let i=state.openings.length-1;i>=0;i--){
     const op=state.openings[i];
+    if(op.type==='drain'){
+      const dx=(op.drainX||op.pos), dy=(op.drainY||op.pos), r=(op.width||15)/2;
+      if(Math.abs(cx-dx)<r&&Math.abs(cy-dy)<r) return i;
+      continue;
+    }
+    // Opening in wall strip
     let bx,by,bw,bh;
-    if(op.wall===1||op.wall===3){bx=op.pos;by=(op.wall===1?netD-op.height:0);bw=op.width;bh=op.height;}
-    else{by=op.pos;bx=(op.wall===2?0:netW-op.height);bw=op.height;bh=op.width;}
+    if(op.wall===1){bx=op.pos;by=netD;bw=op.width;bh=buildup;}
+    else if(op.wall===3){bx=op.pos;by=-buildup;bw=op.width;bh=buildup;}
+    else if(op.wall===2){bx=-buildup;by=op.pos;bw=buildup;bh=op.width;}
+    else{bx=netW;by=op.pos;bw=buildup;bh=op.width;}
     if(cx>=bx&&cx<=bx+bw&&cy>=by&&cy<=by+bh) return i;
   }
   return -1;
@@ -977,7 +1204,9 @@ floorCanvas.addEventListener('mousedown',e=>{
     selectedItem={type:'opening',idx:oi};
     isDragging=true; dragWhat='opening';
     const op=state.openings[oi];
-    dragStartX=cx; dragStartY=cy; dragOrigX=op.pos; dragOrigY=0;
+    dragStartX=cx; dragStartY=cy;
+    dragOrigX=op.type==='drain'?(op.drainX||op.pos):op.pos;
+    dragOrigY=op.type==='drain'?(op.drainY||0):0;
   } else {
     selectedItem=null;
   }
@@ -991,9 +1220,14 @@ floorCanvas.addEventListener('mousemove',e=>{
   if(dragWhat==='opening'){
     const op=state.openings[selectedItem.idx];
     const {netW,netD}=getNetDims();
-    const dx=cx-dragStartX;
-    const maxPos=(op.wall===1||op.wall===3?netW:netD)-op.width;
-    op.pos=Math.max(0,Math.min(maxPos,Math.round(dragOrigX+dx)));
+    if(op.type==='drain'){
+      op.drainX=Math.max(0,Math.min(netW,Math.round(dragOrigX+(cx-dragStartX))));
+      op.drainY=Math.max(0,Math.min(netD,Math.round(dragOrigY+(cy-dragStartY))));
+    } else {
+      const dx=cx-dragStartX;
+      const maxPos=(op.wall===1||op.wall===3?netW:netD)-op.width;
+      op.pos=Math.max(0,Math.min(maxPos,Math.round(dragOrigX+dx)));
+    }
   } else if(dragWhat==='fixture'){
     const pf=state.placedFixtures[selectedItem.idx];
     const {netW,netD}=getNetDims();
@@ -1180,12 +1414,63 @@ function bindAll(){
   $('themeBtn').addEventListener('click',toggleTheme);
 
   // Openings
-  $('addDoor90').addEventListener('click',()=>addOpening('door',90,20));
-  $('addDoor75').addEventListener('click',()=>addOpening('door75',75,20));
-  $('addWindow').addEventListener('click',()=>addOpening('window',90,15));
+  $('addDoor90').addEventListener('click',()=>openDoorModal('door',90));
+  $('addDoor75').addEventListener('click',()=>openDoorModal('door75',75));
+  $('addWindow').addEventListener('click',()=>openWindowModal());
   $('addThreshold').addEventListener('click',()=>openThreshModal());
-  $('addDrain').addEventListener('click',()=>addOpening('drain',0,0));
-  $('addPipe').addEventListener('click',()=>addOpening('pipe',30,30));
+  $('addDrain').addEventListener('click',()=>openDrainModal());
+
+  // Door modal
+  $('doorModalCancel').addEventListener('click',()=>$('doorModal').classList.remove('open'));
+  $('doorModalApply').addEventListener('click',()=>{
+    const wall=+$('doorWall').value;
+    const width=+$('doorWidth').value;
+    const {netW,netD}=getNetDims();
+    const maxLen=wall===1||wall===3?netW:netD;
+    state.openings.push({
+      type:state._doorModalType||'door', wall, pos:Math.min(+$('doorPos').value,maxLen-width),
+      width, height:0, swing:$('doorSwing').value, leafThick:+$('doorLeafThick').value
+    });
+    $('doorModal').classList.remove('open'); render();
+  });
+
+  // Window modal
+  $('winModalCancel').addEventListener('click',()=>$('windowModal').classList.remove('open'));
+  $('winModalApply').addEventListener('click',()=>{
+    const wall=+$('winWall').value;
+    const width=+$('winWidth').value;
+    const {netW,netD}=getNetDims();
+    const maxLen=wall===1||wall===3?netW:netD;
+    state.openings.push({
+      type:'window', wall, pos:Math.min(+$('winPos').value,maxLen-width),
+      width, height:+$('winHeight').value, sill:+$('winSill').value
+    });
+    $('windowModal').classList.remove('open'); render();
+  });
+
+  // Drain modal
+  $('drainModalCancel').addEventListener('click',()=>$('drainModal').classList.remove('open'));
+  $('drainModalApply').addEventListener('click',()=>{
+    const {netW,netD}=getNetDims();
+    state.openings.push({
+      type:'drain', wall:0, pos:0,
+      drainX:Math.min(+$('drainX').value,netW), drainY:Math.min(+$('drainY').value,netD),
+      width:+$('drainSize').value, height:+$('drainSize').value
+    });
+    $('drainModal').classList.remove('open'); render();
+  });
+
+  // Save/Load modal
+  $('saveLoadBtn').addEventListener('click',()=>{ refreshSavedList(); $('saveModal').classList.add('open'); });
+  $('saveModalClose').addEventListener('click',()=>$('saveModal').classList.remove('open'));
+  $('saveProjectBtn').addEventListener('click',()=>{
+    const name=$('saveProjectName').value.trim();
+    if(!name){notify('請輸入專案名稱'); return;}
+    const saves=JSON.parse(localStorage.getItem('tileplanner_saves')||'{}');
+    saves[name]={data:getExportState(),saved:new Date().toLocaleString('zh-TW')};
+    localStorage.setItem('tileplanner_saves',JSON.stringify(saves));
+    notify('✅ 專案「'+name+'」已儲存'); refreshSavedList();
+  });
 
   $('deleteSelectedBtn').addEventListener('click',()=>{
     if(!selectedItem) return;
@@ -1271,6 +1556,66 @@ function bindAll(){
   });
 }
 
+function openDoorModal(type, defaultWidth){
+  state._doorModalType = type;
+  $('doorModalTitle').textContent = type==='door75'?'🚪 門設定（75cm）':'🚪 門設定（90cm）';
+  $('doorWidth').value = defaultWidth||90;
+  $('doorPos').value = 0;
+  $('doorModal').classList.add('open');
+}
+function openWindowModal(){
+  $('windowModal').classList.add('open');
+}
+function openDrainModal(){
+  const {netW,netD}=getNetDims();
+  $('drainX').value = Math.round(netW/2);
+  $('drainY').value = Math.round(netD/2);
+  $('drainModal').classList.add('open');
+}
+
+function refreshSavedList(){
+  const saves=JSON.parse(localStorage.getItem('tileplanner_saves')||'{}');
+  const el=$('savedProjectList');
+  const keys=Object.keys(saves);
+  if(keys.length===0){el.innerHTML='<div style="padding:8px;font-size:12px;color:var(--text3)">尚無已儲存的專案</div>';return;}
+  el.innerHTML='';
+  keys.forEach(name=>{
+    const item=saves[name];
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 8px;border-bottom:1px solid var(--border2);font-size:12px';
+    div.innerHTML=`<span style="flex:1;font-weight:600">${name}</span><span style="color:var(--text3);font-size:11px">${item.saved}</span>
+    <button class="btn btn-sm btn-primary" data-load="${name}">載入</button>
+    <button class="btn btn-sm btn-danger" data-del="${name}">✕</button>`;
+    div.querySelector('[data-load]').addEventListener('click',()=>{
+      const data=saves[name].data;
+      loadState(data); $('saveModal').classList.remove('open'); notify('✅ 已載入：'+name);
+    });
+    div.querySelector('[data-del]').addEventListener('click',()=>{
+      delete saves[name]; localStorage.setItem('tileplanner_saves',JSON.stringify(saves));
+      refreshSavedList(); notify('已刪除：'+name);
+    });
+    el.appendChild(div);
+  });
+}
+
+function loadState(data){
+  if(data.room) Object.assign(state.room,data.room);
+  if(data.wallTile) Object.assign(state.wallTile,data.wallTile);
+  if(data.floorTile) Object.assign(state.floorTile,data.floorTile);
+  if(data.floorLayout) state.floorLayout=data.floorLayout;
+  if(data.wallLayout) state.wallLayout=data.wallLayout;
+  if(data.offset) Object.assign(state.offset,data.offset);
+  if(data.openings) state.openings=data.openings;
+  if(data.threshold!==undefined) state.threshold=data.threshold;
+  if(data.columns) Object.assign(state.columns,data.columns);
+  if(data.fixtures){ state.fixtures=data.fixtures; imgCache={};
+    data.fixtures.forEach(f=>{if(f.imgData){const img=new Image();img.onload=()=>{imgCache[f.id]=img;render()};img.src=f.imgData;}});
+  }
+  if(data.placedFixtures) state.placedFixtures=data.placedFixtures;
+  if(data.caseInfo) Object.assign(state.caseInfo,data.caseInfo);
+  syncUI(); renderFixtureList(); render();
+}
+
 function addOpening(type,width,height){
   const {netW}=getNetDims();
   state.openings.push({type,wall:1,pos:Math.max(0,Math.round(netW/2-(width||0)/2)),width:width||10,height:height||10});
@@ -1330,21 +1675,7 @@ function importJSON(e){
   reader.onload=ev=>{
     try{
       const data=JSON.parse(ev.target.result);
-      if(data.room) Object.assign(state.room,data.room);
-      if(data.wallTile) Object.assign(state.wallTile,data.wallTile);
-      if(data.floorTile) Object.assign(state.floorTile,data.floorTile);
-      if(data.floorLayout) state.floorLayout=data.floorLayout;
-      if(data.wallLayout) state.wallLayout=data.wallLayout;
-      if(data.offset) Object.assign(state.offset,data.offset);
-      if(data.openings) state.openings=data.openings;
-      if(data.threshold!==undefined) state.threshold=data.threshold;
-      if(data.columns) Object.assign(state.columns,data.columns);
-      if(data.fixtures){ state.fixtures=data.fixtures; imgCache={};
-        data.fixtures.forEach(f=>{if(f.imgData){const img=new Image();img.onload=()=>{imgCache[f.id]=img;render()};img.src=f.imgData;}});
-      }
-      if(data.placedFixtures) state.placedFixtures=data.placedFixtures;
-      if(data.caseInfo) Object.assign(state.caseInfo,data.caseInfo);
-      syncUI(); renderFixtureList(); render();
+      loadState(data);
       notify('✅ 載入成功！');
     }catch(err){notify('❌ 載入失敗：格式錯誤')}
   };
