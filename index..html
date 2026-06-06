@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>浴室磁磚計畫 v3</title>
+<style>
+:root {
+  --bg:#f0f2f5; --surface:#fff; --surface2:#f5f6f8; --surface3:#eaecf0;
+  --border:#d4d7de; --border2:#e8eaed;
+  --text:#1c1f26; --text2:#52586a; --text3:#9098aa;
+  --accent:#1a6ef5; --accent2:#0d4fc4; --accent-light:#e8f0fe; --accent-bg:#f0f4ff;
+  --danger:#e03030; --warn:#e07820; --success:#18a050;
+  --shadow:0 1px 4px rgba(0,0,0,.09); --shadow2:0 4px 20px rgba(0,0,0,.13);
+  --radius:7px; --font:'Segoe UI','PingFang TC','Microsoft JhengHei',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;line-height:1.4;min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 14px;height:46px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:var(--shadow)}
+.topbar-title{font-size:15px;font-weight:800;color:var(--text);letter-spacing:-.4px;display:flex;align-items:center;gap:8px}
+.topbar-actions{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:var(--font)}
+.btn:hover{background:var(--surface2);border-color:#bbc}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent2)}
+.btn-sm{padding:3px 8px;font-size:11px}
+.btn-danger{border-color:var(--danger);color:var(--danger)}
+.btn-danger:hover{background:#fff0f0}
+.btn-active{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
+.btn-icon{padding:4px 7px;font-size:13px}
+
+/* LAYOUT */
+.main{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px;max-width:1700px;margin:0 auto}
+@media(max-width:1100px){.main{grid-template-columns:1fr}}
+.left-col{display:flex;flex-direction:column;gap:12px}
+.right-col{display:flex;flex-direction:column;gap:12px}
+
+/* PANELS */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.panel-header{background:var(--surface2);border-bottom:1px solid var(--border2);padding:7px 12px;font-size:12px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:6px;user-select:none}
+.panel-header .hdr-icon{font-size:14px}
+.panel-body{padding:11px 12px}
+
+/* FORM */
+.form-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:7px}
+.form-row:last-child{margin-bottom:0}
+.form-label{font-size:12px;color:var(--text2);font-weight:500;white-space:nowrap}
+.form-input{padding:4px 7px;border:1px solid var(--border);border-radius:5px;font-size:13px;font-family:var(--font);background:var(--surface);color:var(--text);transition:border-color .15s}
+.form-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-light)}
+.form-input-num{width:64px;text-align:right}
+.form-input-wide{width:120px}
+.form-unit{font-size:11px;color:var(--text3)}
+.form-sep{color:var(--border);font-size:14px}
+select.form-input{cursor:pointer}
+
+/* STATS */
+.stats-bar{display:flex;gap:14px;padding:7px 12px;background:var(--surface2);border-bottom:1px solid var(--border2);flex-wrap:wrap;align-items:center}
+.stat{display:flex;align-items:baseline;gap:3px;font-size:12px}
+.stat-label{color:var(--text3)}
+.stat-value{font-weight:700;color:var(--text);font-size:13px}
+.stat-value.blue{color:var(--accent)}
+.stat-value.orange{color:var(--warn)}
+.stat-value.red{color:var(--danger)}
+
+/* CANVAS */
+.canvas-wrap{position:relative;overflow:auto;background:#d8dce4}
+canvas{display:block;cursor:crosshair}
+
+/* TOOLBAR */
+.toolbar{display:flex;gap:6px;padding:7px 12px;border-bottom:1px solid var(--border2);align-items:center;flex-wrap:wrap;background:var(--surface)}
+
+/* TABS */
+.tabs{display:flex;gap:2px;padding:7px 12px 0;background:var(--surface2);border-bottom:1px solid var(--border2)}
+.tab{padding:5px 11px;font-size:12px;font-weight:500;color:var(--text2);border:1px solid transparent;border-bottom:none;border-radius:5px 5px 0 0;cursor:pointer;transition:all .15s;background:transparent}
+.tab:hover{background:var(--surface);color:var(--text)}
+.tab.active{background:var(--surface);border-color:var(--border2);color:var(--accent);font-weight:700}
+
+/* SLIDER */
+.slider-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.slider-label{font-size:12px;color:var(--text2);min-width:65px}
+input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
+
+/* LEGEND */
+.legend{display:flex;gap:12px;padding:6px 12px;border-top:1px solid var(--border2);font-size:11px;flex-wrap:wrap;background:var(--surface)}
+.legend-item{display:flex;align-items:center;gap:4px}
+.legend-dot{width:11px;height:11px;border-radius:2px;flex-shrink:0}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:10px;padding:20px;min-width:340px;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow2)}
+.modal-title{font-size:15px;font-weight:800;margin-bottom:14px;color:var(--text)}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+/* NOTIF */
+.notif{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:10px 16px;border-radius:7px;font-size:13px;z-index:999;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none}
+/* Draggable modals */
+.draggable-modal{position:relative}
+.modal-overlay.drag-active{background:rgba(0,0,0,.35)}
+.modal-overlay .modal.floating{position:fixed;top:auto;left:auto;margin:0;box-shadow:0 8px 32px rgba(0,0,0,.25)}
+/* Opening list */
+.opening-list-item{display:flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid var(--border2);border-radius:5px;background:var(--surface2);font-size:12px;margin-bottom:3px}
+.opening-list-item:hover{border-color:var(--accent)}
+.opening-badge{padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;background:var(--accent-light);color:var(--accent)}
+.opening-badge.win{background:#e0f0ff;color:#2a608a}
+.opening-badge.thresh{background:#fff3e0;color:#a07040}
+.opening-badge.drain{background:#eee;color:#555}
+.notif.show{opacity:1;transform:translateY(0)}
+
+/* GRID 2COL */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+
+/* COLUMN PANEL */
+.columns-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
+.corner-box{border:1px solid var(--border2);border-radius:5px;padding:6px 8px;background:var(--surface2)}
+.corner-box label{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px}
+.corner-inner{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+
+/* FIXTURE PANEL */
+.fixture-list{display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto;margin-bottom:8px}
+.fixture-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--border2);border-radius:5px;background:var(--surface);cursor:pointer;transition:all .12s}
+.fixture-item:hover{border-color:var(--accent);background:var(--accent-bg)}
+.fixture-item.selected{border-color:var(--accent);background:var(--accent-light)}
+.fixture-thumb{width:40px;height:40px;object-fit:contain;border-radius:4px;background:var(--surface2);border:1px solid var(--border2);flex-shrink:0}
+.fixture-thumb-placeholder{width:40px;height:40px;border-radius:4px;background:var(--surface3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.fixture-info{flex:1;min-width:0}
+.fixture-name{font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fixture-size{font-size:11px;color:var(--text3)}
+.fixture-actions{display:flex;gap:3px;flex-shrink:0}
+
+/* FIXTURE ON CANVAS SELECTION HANDLE */
+.tool-mode-bar{display:flex;gap:5px;padding:7px 12px;border-bottom:1px solid var(--border2);align-items:center;background:var(--surface2)}
+.tool-btn{padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:var(--surface);font-size:11px;font-weight:600;cursor:pointer;transition:all .12s;color:var(--text2)}
+.tool-btn:hover{background:var(--surface3)}
+.tool-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-title">🪣 浴室磁磚計畫</div>
+  <div class="topbar-actions">
+    <button class="btn" id="themeBtn">🌙 深色</button>
+    <button class="btn" id="caseInfoBtn">📋 案件資訊</button>
+    <button class="btn btn-primary" id="saveLoadBtn">💾 儲存/載入</button>
+    <button class="btn btn-primary" id="exportPdfBtn">匯出 PDF</button>
+    <button class="btn" id="exportPngBtn">匯出 PNG</button>
+    <button class="btn" id="exportSvgBtn">匯出 SVG</button>
+    <button class="btn" id="exportJsonBtn">💾 JSON</button>
+    <button class="btn" id="importJsonBtn">📂 載入</button>
+    <input type="file" id="importFile" accept=".json" style="display:none">
+  </div>
+</div>
+
+<div class="main">
+<!-- ===== LEFT COL ===== -->
+<div class="left-col">
+
+  <!-- ROOM SETTINGS -->
+  <div class="panel">
+    <div class="panel-header"><span class="hdr-icon">📐</span>房間設定</div>
+    <div class="panel-body">
+      <div class="form-row">
+        <span class="form-label">打底尺寸 長</span>
+        <input class="form-input form-input-num" id="roomW" type="number" value="280" min="50" max="2000">
+        <span class="form-label">寬</span>
+        <input class="form-input form-input-num" id="roomD" type="number" value="180" min="50" max="2000">
+        <span class="form-label">牆高</span>
+        <input class="form-input form-input-num" id="wallH" type="number" value="270" min="50" max="500">
+        <span class="form-label">鋪到</span>
+        <input class="form-input form-input-num" id="tileH" type="number" value="240" min="0" max="500">
+        <span class="form-label">收邊條</span>
+        <input class="form-input form-input-num" id="trimW" type="number" value="240">
+        <span class="form-unit">cm</span>
+        <span class="form-label" style="margin-left:6px">結構+打底</span>
+        <input class="form-input form-input-num" id="structThick" type="number" value="15" min="5" max="50" title="結構體+打底厚度（cm）">
+        <span class="form-unit">cm</span>
+      </div>
+      <div class="form-row">
+        <span class="form-label">牆磚</span>
+        <input class="form-input form-input-wide" id="wallTileModel" type="text" placeholder="型號">
+        <span class="form-label">尺寸</span>
+        <input class="form-input form-input-num" id="wallTileW" type="number" value="200" min="10">
+        <span class="form-sep">×</span>
+        <input class="form-input form-input-num" id="wallTileH" type="number" value="200" min="10">
+        <span class="form-unit">mm</span>
+        <span class="form-label">縫劑</span>
+        <input class="form-input form-input-wide" id="wallGroutModel" type="text" placeholder="縫劑型號">
+        <span class="form-label">縫</span>
+        <input class="form-input form-input-num" id="wallGrout" type="number" value="3" min="1" max="20">
+        <span class="form-unit">mm</span>
+        <span class="form-label" style="margin-left:6px;color:var(--warn)">磚厚</span>
+        <input class="form-input form-input-num" id="wallTileThick" type="number" value="10" min="1" max="50" title="牆磚厚度 mm">
+        <span class="form-label">粘劑</span>
+        <input class="form-input form-input-num" id="wallAdhesive" type="number" value="6" min="1" max="30" title="粘著劑厚度 mm">
+        <span class="form-unit">mm</span>
+      </div>
+      <!-- NET DIMENSION DISPLAY -->
+      <div class="form-row" id="netDimRow" style="background:var(--accent-bg);border:1px solid var(--border2);border-radius:6px;padding:5px 10px;gap:12px">
+        <span style="font-size:11px;font-weight:700;color:var(--accent)">實際鋪磚淨尺寸</span>
+        <span style="font-size:11px;color:var(--text2)">鋪磚淨長（扣磚粘）：</span>
+        <span style="font-size:13px;font-weight:700;color:var(--text)" id="netW">—</span>
+        <span style="font-size:11px;color:var(--text3)">cm</span>
+        <span style="font-size:11px;color:var(--text2)">鋪磚淨寬（扣磚粘）：</span>
+        <span style="font-size:13px;font-weight:700;color:var(--text)" id="netD">—</span>
+        <span style="font-size:11px;color:var(--text3)">cm</span>
+        <span style="font-size:11px;font-weight:600;color:var(--warn)" id="netBuildupNote"></span>
+      </div>
+      <div class="form-row">
+        <span class="form-label">地磚</span>
+        <input class="form-input form-input-wide" id="floorTileModel" type="text" placeholder="型號">
+        <span class="form-label">尺寸</span>
+        <input class="form-input form-input-num" id="floorTileW" type="number" value="200" min="10">
+        <span class="form-sep">×</span>
+        <input class="form-input form-input-num" id="floorTileH" type="number" value="200" min="10">
+        <span class="form-unit">mm</span>
+        <span class="form-label">縫劑</span>
+        <input class="form-input form-input-wide" id="floorGroutModel" type="text" placeholder="縫劑型號">
+        <span class="form-label">縫</span>
+        <input class="form-input form-input-num" id="floorGrout" type="number" value="3" min="1" max="20">
+        <span class="form-unit">mm</span>
+      </div>
+      <div class="form-row">
+        <span class="form-label">地磚貼法</span>
+        <select class="form-input" id="floorLayout">
+          <option value="align">對齊</option>
+          <option value="h_half">水平交丁 1/2</option>
+          <option value="h_third">水平交丁 1/3</option>
+          <option value="v_half">垂直交丁 1/2</option>
+          <option value="v_third">垂直交丁 1/3</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLUMN SETTINGS -->
+  <div class="panel">
+    <div class="panel-header"><span class="hdr-icon">🏛️</span>角落柱體（其他房間凸出）
+      <label style="margin-left:auto;display:flex;align-items:center;gap:5px;font-weight:400;cursor:pointer">
+        <input type="checkbox" id="columnsEnabled"> 啟用
+      </label>
+    </div>
+    <div class="panel-body" id="columnsBody" style="display:none">
+      <p style="font-size:11px;color:var(--text3);margin-bottom:8px">設定各角落凸出的寬 × 深（cm）及類型。0 = 無凸出。</p>
+      <div class="columns-grid">
+        <div class="corner-box">
+          <label>↖ 左上角 (W3-W2)</label>
+          <div class="corner-inner">
+            <input class="form-input form-input-num" id="col_tl_w" type="number" value="0" min="0" max="200" placeholder="寬">
+            <span class="form-sep">×</span>
+            <input class="form-input form-input-num" id="col_tl_d" type="number" value="0" min="0" max="200" placeholder="深">
+            <span class="form-unit">cm</span>
+            <select class="form-input" id="col_tl_type" style="font-size:11px;padding:2px 4px;width:auto">
+              <option value="col">柱</option>
+              <option value="pipe">管道間</option>
+              <option value="other">其他房間</option>
+            </select>
+          </div>
+        </div>
+        <div class="corner-box">
+          <label>↗ 右上角 (W3-W4)</label>
+          <div class="corner-inner">
+            <input class="form-input form-input-num" id="col_tr_w" type="number" value="0" min="0" max="200" placeholder="寬">
+            <span class="form-sep">×</span>
+            <input class="form-input form-input-num" id="col_tr_d" type="number" value="0" min="0" max="200" placeholder="深">
+            <span class="form-unit">cm</span>
+            <select class="form-input" id="col_tr_type" style="font-size:11px;padding:2px 4px;width:auto">
+              <option value="col">柱</option>
+              <option value="pipe">管道間</option>
+              <option value="other">其他房間</option>
+            </select>
+          </div>
+        </div>
+        <div class="corner-box">
+          <label>↙ 左下角 (W1-W2)</label>
+          <div class="corner-inner">
+            <input class="form-input form-input-num" id="col_bl_w" type="number" value="0" min="0" max="200" placeholder="寬">
+            <span class="form-sep">×</span>
+            <input class="form-input form-input-num" id="col_bl_d" type="number" value="0" min="0" max="200" placeholder="深">
+            <span class="form-unit">cm</span>
+            <select class="form-input" id="col_bl_type" style="font-size:11px;padding:2px 4px;width:auto">
+              <option value="col">柱</option>
+              <option value="pipe">管道間</option>
+              <option value="other">其他房間</option>
+            </select>
+          </div>
+        </div>
+        <div class="corner-box">
+          <label>↘ 右下角 (W1-W4)</label>
+          <div class="corner-inner">
+            <input class="form-input form-input-num" id="col_br_w" type="number" value="0" min="0" max="200" placeholder="寬">
+            <span class="form-sep">×</span>
+            <input class="form-input form-input-num" id="col_br_d" type="number" value="0" min="0" max="200" placeholder="深">
+            <span class="form-unit">cm</span>
+            <select class="form-input" id="col_br_type" style="font-size:11px;padding:2px 4px;width:auto">
+              <option value="col">柱</option>
+              <option value="pipe">管道間</option>
+              <option value="other">其他房間</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIXTURE LIBRARY -->
+  <div class="panel">
+    <div class="panel-header"><span class="hdr-icon">🛁</span>衛浴設備
+      <button class="btn btn-sm btn-primary" id="addFixtureFileBtn" style="margin-left:auto">+ 從資料夾選圖</button>
+      <input type="file" id="fixtureFileInput" accept="image/*" multiple style="display:none">
+    </div>
+    <div class="panel-body" style="padding:8px">
+      <div id="fixtureEmptyHint" style="font-size:12px;color:var(--text3);text-align:center;padding:10px">
+        點擊「從資料夾選圖」載入衛浴設備平面圖（PNG / JPG）<br>
+        <span style="font-size:11px">支援多選，每張圖代表一個設備</span>
+      </div>
+      <div class="fixture-list" id="fixtureList"></div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:4px" id="fixturePlaceBar" style="display:none">
+        <span style="font-size:11px;color:var(--text2)">選取後點擊地板放置 →</span>
+        <button class="btn btn-sm" id="cancelPlaceBtn" style="display:none">取消放置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOOR PLAN -->
+  <div class="panel">
+    <div class="stats-bar" id="floorStatsBar">
+      <span style="font-size:11px;font-weight:700;color:var(--text2)">地板</span>
+      <div class="stat"><span class="stat-label">全片</span><span class="stat-value" id="fsFull">—</span></div>
+      <div class="stat"><span class="stat-label">裁切</span><span class="stat-value orange" id="fsCut">—</span></div>
+      <div class="stat"><span class="stat-label">估購</span><span class="stat-value red" id="fsTotal">—</span></div>
+      <div class="stat"><span class="stat-value blue" id="fsArea">—</span><span class="stat-label">m²</span></div>
+      <div class="stat"><span class="stat-label">收邊條</span><span class="stat-value" id="fsTrim">—</span><span class="stat-label">條</span></div>
+    </div>
+
+    <!-- TOOL MODE -->
+    <div class="tool-mode-bar">
+      <span style="font-size:11px;color:var(--text3);font-weight:600">工具</span>
+      <button class="tool-btn active" id="toolSelect" data-tool="select">↖ 選取</button>
+      <button class="tool-btn" id="toolPlace" data-tool="place" style="display:none">📍 放置設備</button>
+      <span id="activeFixtureName" style="font-size:11px;color:var(--accent);font-weight:600;display:none"></span>
+      <div style="margin-left:auto;display:flex;gap:5px">
+        <span style="font-size:11px;color:var(--text3)">縮放:</span>
+        <input type="range" id="canvasZoom" min="50" max="300" value="100" style="width:80px">
+        <span style="font-size:11px;color:var(--text3)" id="zoomLabel">100%</span>
+      </div>
+    </div>
+
+    <!-- OFFSET -->
+    <div class="toolbar">
+      <span style="font-size:11px;color:var(--text2);font-weight:600">X →</span>
+      <input type="range" id="offsetX" min="-200" max="200" value="0" style="width:100px">
+      <input class="form-input form-input-num" id="offsetXVal" type="number" value="0" style="width:52px">
+      <span class="form-unit">mm</span>
+      <span style="font-size:11px;color:var(--text2);font-weight:600;margin-left:6px">↓ Y</span>
+      <input type="range" id="offsetY" min="-200" max="200" value="0" style="width:100px">
+      <input class="form-input form-input-num" id="offsetYVal" type="number" value="0" style="width:52px">
+      <span class="form-unit">mm</span>
+    </div>
+
+    <!-- OPENINGS -->
+    <div class="toolbar" style="flex-wrap:wrap">
+      <button class="btn btn-sm btn-primary" id="addDoor90">+ 門 90</button>
+      <button class="btn btn-sm btn-primary" id="addDoor75">+ 門 75</button>
+      <button class="btn btn-sm" id="addWindow">+ 加窗</button>
+      <button class="btn btn-sm" id="addThreshold">+ 門檻</button>
+      <button class="btn btn-sm" id="addDrain">+ 地排</button>
+      <button class="btn btn-sm btn-danger" id="deleteSelectedBtn" style="display:none;margin-left:auto">🗑 刪除選取</button>
+      <button class="btn btn-sm" id="cancelSelectBtn" style="display:none">取消</button>
+    </div>
+    <!-- OPENINGS LIST -->
+    <div id="openingsListPanel" style="padding:6px 12px 2px;border-bottom:1px solid var(--border2);display:none">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:4px">已加入的門窗門檻</div>
+      <div id="openingsListContainer"></div>
+    </div>
+
+    <!-- FLOOR CANVAS -->
+    <div class="canvas-wrap" id="floorCanvasWrap">
+      <canvas id="floorCanvas"></canvas>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#6fa8dc"></div><span>全片</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#e06c4a"></div><span>裁切</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#c9a96e"></div><span>門檻</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8a95a8;opacity:.8"></div><span>柱體</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(80,100,140,0.45)"></div><span>磚+粘劑層</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#7ec9a0"></div><span>設備</span></div>
+      <span style="font-size:11px;color:var(--text3);margin-left:auto">拖曳 = 移動開口/設備 | 雙擊設備 = 旋轉</span>
+    </div>
+  </div>
+</div><!-- /LEFT -->
+
+<!-- ===== RIGHT COL ===== -->
+<div class="right-col">
+
+  <!-- WALL OFFSET -->
+  <div class="panel">
+    <div class="panel-header"><span class="hdr-icon">↔</span>起鋪點偏移</div>
+    <div class="panel-body">
+      <div class="grid2">
+        <div class="slider-row"><span class="slider-label">W1 (下)</span><input type="range" id="offW1" min="-200" max="200" value="2"><input class="form-input" id="offW1Val" type="number" value="2" style="width:50px"><span class="form-unit">mm</span></div>
+        <div class="slider-row"><span class="slider-label">W2 (左)</span><input type="range" id="offW2" min="-200" max="200" value="0"><input class="form-input" id="offW2Val" type="number" value="0" style="width:50px"><span class="form-unit">mm</span></div>
+        <div class="slider-row"><span class="slider-label">W3 (上)</span><input type="range" id="offW3" min="-200" max="200" value="0"><input class="form-input" id="offW3Val" type="number" value="0" style="width:50px"><span class="form-unit">mm</span></div>
+        <div class="slider-row"><span class="slider-label">W4 (右)</span><input type="range" id="offW4" min="-200" max="200" value="0"><input class="form-input" id="offW4Val" type="number" value="0" style="width:50px"><span class="form-unit">mm</span></div>
+        <div class="slider-row" style="grid-column:1/-1"><span class="slider-label">上下(全部)</span><input type="range" id="offAll" min="-200" max="200" value="0"><input class="form-input" id="offAllVal" type="number" value="0" style="width:50px"><span class="form-unit">mm</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WALL EXPAND -->
+  <div class="panel" style="flex:1">
+    <div class="stats-bar">
+      <span style="font-size:11px;font-weight:700;color:var(--text2)">牆面磁磚展開</span>
+      <div class="stat"><span class="stat-label">全片</span><span class="stat-value" id="wsFull">—</span></div>
+      <div class="stat"><span class="stat-label">裁切</span><span class="stat-value orange" id="wsCut">—</span></div>
+      <div class="stat"><span class="stat-label">估購</span><span class="stat-value red" id="wsTotal">—</span></div>
+      <div class="stat"><span class="stat-value blue" id="wsArea">—</span><span class="stat-label">M²</span></div>
+    </div>
+    <div class="tabs" id="wallViewTabs">
+      <div class="tab active" data-tab="standard">標準</div>
+      <div class="tab" data-tab="optimal">最佳化</div>
+      <div class="tab" data-tab="wall">牆面</div>
+      <div class="tab" data-tab="box">紙盒</div>
+      <select class="form-input btn-sm" id="wallLayoutSelect" style="width:auto;margin-left:auto;margin-bottom:3px">
+        <option value="align">對齊</option>
+        <option value="h_half">水平交丁 1/2</option>
+        <option value="h_third">水平交丁 1/3</option>
+        <option value="v_half">垂直交丁 1/2</option>
+        <option value="v_third">垂直交丁 1/3</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:6px;padding:7px 12px;border-bottom:1px solid var(--border2);align-items:center;background:var(--surface)">
+      <span style="font-size:11px;color:var(--text2)">標註</span>
+      <button class="btn btn-sm btn-active" id="annotNum">純數字</button>
+      <button class="btn btn-sm" id="annotArch">建築風</button>
+    </div>
+    <div style="overflow-x:auto;padding:10px 12px">
+      <canvas id="wallExpandCanvas"></canvas>
+    </div>
+  </div>
+
+  <!-- PLACED FIXTURES TABLE -->
+  <div class="panel" id="placedFixturesPanel" style="display:none">
+    <div class="panel-header"><span class="hdr-icon">📍</span>已放置設備</div>
+    <div class="panel-body" style="padding:8px">
+      <div id="placedList" style="display:flex;flex-direction:column;gap:4px"></div>
+    </div>
+  </div>
+
+</div><!-- /RIGHT -->
+</div><!-- /MAIN -->
+
+<!-- MODALS -->
+<!-- CASE INFO -->
+<div class="modal-overlay" id="caseModal">
+  <div class="modal">
+    <div class="modal-title">📋 案件資訊</div>
+    <div class="form-row"><span class="form-label" style="min-width:55px">案名</span><input class="form-input" id="caseName" placeholder="案名" style="flex:1"></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:55px">地址</span><input class="form-input" id="caseAddr" placeholder="地址" style="flex:1"></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:55px">副標題</span><input class="form-input" id="caseSub" placeholder="英文標籤" style="flex:1"></div>
+    <div class="modal-footer">
+      <button class="btn" id="caseModalCancel">取消</button>
+      <button class="btn btn-primary" id="caseModalSave">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- THRESHOLD -->
+<div class="modal-overlay" id="threshModal">
+  <div class="modal draggable-modal" id="threshModalBox">
+    <div class="modal-title drag-handle" style="cursor:move;user-select:none">🪨 人造石門檻設定 <span style="font-size:11px;color:var(--text3);font-weight:400">（拖曳標題可移動）</span></div>
+    <div class="form-row"><span class="form-label" style="min-width:45px">編號/名稱</span><input class="form-input" id="threshLabel" type="text" placeholder="如：主臥門檻" style="width:130px"></div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:8px;padding:6px 0;border-bottom:1px solid var(--border2)">門檻自動對齊 W1 的門寬，如無門則橫跨全寬</div>
+    <div class="form-row"><span class="form-label" style="min-width:45px">門檻寬度</span><input class="form-input form-input-num" id="threshWid" type="number" value="6"><span class="form-unit">cm（門檻厚，通常小於牆厚）</span></div>
+    <div class="modal-footer">
+      <button class="btn" id="threshCancel">取消</button>
+      <button class="btn btn-danger" id="threshRemove">移除門檻</button>
+      <button class="btn btn-primary" id="threshApply">套用</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIXTURE EDIT -->
+<div class="modal-overlay" id="fixtureEditModal">
+  <div class="modal">
+    <div class="modal-title">✏️ 編輯設備</div>
+    <div class="form-row"><span class="form-label" style="min-width:55px">名稱</span><input class="form-input" id="feditName" style="flex:1"></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:55px">寬 (cm)</span><input class="form-input form-input-num" id="feditW" type="number" value="60"></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:55px">深 (cm)</span><input class="form-input form-input-num" id="feditD" type="number" value="40"></div>
+    <div class="modal-footer">
+      <button class="btn" id="feditCancel">取消</button>
+      <button class="btn btn-primary" id="feditSave">確定</button>
+    </div>
+  </div>
+</div>
+
+<!-- DOOR MODAL -->
+<div class="modal-overlay" id="doorModal">
+  <div class="modal draggable-modal" id="doorModalBox">
+    <div class="modal-title drag-handle" id="doorModalTitle" style="cursor:move;user-select:none">🚪 門設定 <span style="font-size:11px;color:var(--text3);font-weight:400">（拖曳標題可移動）</span></div>
+    <div class="form-row"><span class="form-label" style="min-width:60px">編號/名稱</span><input class="form-input" id="doorLabel" type="text" placeholder="如：主臥門" style="width:130px"></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">開口寬</span><input class="form-input form-input-num" id="doorWidth" type="number" value="90" min="30" max="300"><span class="form-unit">cm</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">門高</span><input class="form-input form-input-num" id="doorHeight" type="number" value="210" min="100" max="300"><span class="form-unit">cm</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">門片厚</span><input class="form-input form-input-num" id="doorLeafThick" type="number" value="4" min="1" max="10"><span class="form-unit">cm</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">所在牆</span>
+      <select class="form-input" id="doorWall">
+        <option value="1">W1（下）</option>
+        <option value="2">W2（左）</option>
+        <option value="3">W3（上）</option>
+        <option value="4">W4（右）</option>
+      </select>
+    </div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">位置</span><input class="form-input form-input-num" id="doorPos" type="number" value="0" min="0"><span class="form-unit">cm（從牆左/下起算）</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">開啟方向</span>
+      <select class="form-input" id="doorSwing">
+        <option value="cw">順時針（向右開）</option>
+        <option value="ccw">逆時針（向左開）</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="doorModalCancel">取消</button>
+      <button class="btn btn-primary" id="doorModalApply">加入</button>
+    </div>
+  </div>
+</div>
+
+<!-- WINDOW MODAL -->
+<div class="modal-overlay" id="windowModal">
+  <div class="modal draggable-modal" id="windowModalBox">
+    <div class="modal-title drag-handle" style="cursor:move;user-select:none">🪟 窗設定 <span style="font-size:11px;color:var(--text3);font-weight:400">（拖曳標題可移動）</span></div>
+    <div class="form-row"><span class="form-label" style="min-width:60px">編號/名稱</span><input class="form-input" id="winLabel" type="text" placeholder="如：浴室窗" style="width:130px"></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">開口寬</span><input class="form-input form-input-num" id="winWidth" type="number" value="90" min="20" max="300"><span class="form-unit">cm</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">窗台高</span><input class="form-input form-input-num" id="winSill" type="number" value="80" min="0" max="250"><span class="form-unit">cm（地面起算）</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">窗高</span><input class="form-input form-input-num" id="winHeight" type="number" value="120" min="10" max="250"><span class="form-unit">cm</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">所在牆</span>
+      <select class="form-input" id="winWall">
+        <option value="1">W1（下）</option>
+        <option value="2">W2（左）</option>
+        <option value="3">W3（上）</option>
+        <option value="4">W4（右）</option>
+      </select>
+    </div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">位置</span><input class="form-input form-input-num" id="winPos" type="number" value="0" min="0"><span class="form-unit">cm（從牆左/下起算）</span></div>
+    <div class="modal-footer">
+      <button class="btn" id="winModalCancel">取消</button>
+      <button class="btn btn-primary" id="winModalApply">加入</button>
+    </div>
+  </div>
+</div>
+
+<!-- DRAIN MODAL -->
+<div class="modal-overlay" id="drainModal">
+  <div class="modal">
+    <div class="modal-title">🕳️ 地排設定</div>
+    <div class="form-row"><span class="form-label" style="min-width:60px">X 位置</span><input class="form-input form-input-num" id="drainX" type="number" value="50" min="0"><span class="form-unit">cm（從左牆起算）</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">Y 位置</span><input class="form-input form-input-num" id="drainY" type="number" value="50" min="0"><span class="form-unit">cm（從下牆起算）</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">尺寸</span><input class="form-input form-input-num" id="drainSize" type="number" value="15" min="5" max="50"><span class="form-unit">cm</span></div>
+    <div class="modal-footer">
+      <button class="btn" id="drainModalCancel">取消</button>
+      <button class="btn btn-primary" id="drainModalApply">加入</button>
+    </div>
+  </div>
+</div>
+
+<!-- SAVE/LOAD MODAL -->
+<div class="modal-overlay" id="saveModal">
+  <div class="modal">
+    <div class="modal-title">💾 專案儲存 / 載入</div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600">已儲存的專案</div>
+      <div id="savedProjectList" style="max-height:200px;overflow-y:auto;border:1px solid var(--border2);border-radius:6px;padding:4px"></div>
+    </div>
+    <div style="border-top:1px solid var(--border2);padding-top:12px">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600">儲存目前狀態</div>
+      <div style="display:flex;gap:8px">
+        <input class="form-input" id="saveProjectName" placeholder="專案名稱（如：101室浴室）" style="flex:1">
+        <button class="btn btn-primary" id="saveProjectBtn">儲存</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="saveModalClose">關閉</button>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+// ============================
+// STATE
+// ============================
+const state = {
+  room:{ W:280, D:180, wallH:270, tileH:240, trimW:240, structThick:15 },
+  wallTile:{ model:'', w:200, h:200, grout:3, groutModel:'', thickness:10, adhesive:6 },
+  floorTile:{ model:'', w:200, h:200, grout:3, groutModel:'' },
+  floorLayout:'align', wallLayout:'align',
+  offset:{ x:0, y:0, w1:2, w2:0, w3:0, w4:0, all:0 },
+  openings:[], // {type,wall,pos,width,height,swing,leafThick,sill,drainX,drainY,size}
+  threshold:null,
+  columns:{ enabled:false, tl:{w:0,d:0,type:'col'}, tr:{w:0,d:0,type:'col'}, bl:{w:0,d:0,type:'col'}, br:{w:0,d:0,type:'col'} },
+  fixtures:[],        // library: {id, name, imgData, defW, defD}
+  placedFixtures:[],  // on canvas: {fixtureId, x, y, w, d, angle, id}
+  caseInfo:{ name:'', addr:'', sub:'' },
+  darkMode:false,
+  annotStyle:'num',
+  wallView:'standard',
+  zoom:1.0,
+};
+
+let isDragging=false, dragWhat=null, dragStartX=0, dragStartY=0, dragOrigX=0, dragOrigY=0;
+let selectedItem=null; // {type:'opening'|'fixture', idx}
+let placingFixtureId=null;
+let editingFixtureLibIdx=null;
+let imgCache={}; // id -> Image object
+
+// ============================
+// HELPERS
+// ============================
+const $=id=>document.getElementById(id);
+let _nTimer;
+function notify(msg,dur=2200){const el=$('notif');el.textContent=msg;el.classList.add('show');clearTimeout(_nTimer);_nTimer=setTimeout(()=>el.classList.remove('show'),dur)}
+
+function bindSlider(sId,vId,key,sub){
+  const s=$(sId),v=$(vId);
+  const set=val=>{val=Math.round(+val);s.value=val;v.value=val;if(sub)state[sub][key]=val;else state[key]=val;render()};
+  s.addEventListener('input',()=>set(s.value));
+  v.addEventListener('change',()=>set(v.value));
+}
+function bindNum(id,key,sub){
+  const el=$(id);
+  el.addEventListener('change',()=>{const val=+el.value;if(sub)state[sub][key]=val;else state[key]=val;render()});
+}
+function bindTxt(id,key,sub){
+  const el=$(id);
+  el.addEventListener('change',()=>{const val=el.value;if(sub)state[sub][key]=val;else state[key]=val;render()});
+}
+function uid(){return Math.random().toString(36).slice(2)}
+
+// ============================
+// NET DIMENSIONS (after wall buildup)
+// ============================
+function getNetDims(){
+  // buildup per wall = tile thickness + adhesive (mm → cm)
+  const buildup = (state.wallTile.thickness + state.wallTile.adhesive) / 10;
+  // structural = user-defined structThick (cm), default 15
+  const structural = state.room.structThick || 15;
+  // total wall strip added OUTWARD (does NOT reduce net area)
+  const wallTotal = structural + buildup;
+  // Input W/D = 打底完成尺寸; subtract tile+adhesive on both sides to get net tiling area
+  const netW = state.room.W - buildup * 2;
+  const netD = state.room.D - buildup * 2;
+  // Outer structural box = input size + structural on both sides
+  const outerW = state.room.W + structural * 2;
+  const outerD = state.room.D + structural * 2;
+  return { netW: Math.max(1,netW), netD: Math.max(1,netD), buildup, structural, wallTotal, outerW, outerD };
+}
+
+function updateNetDimDisplay(){
+  const { netW, netD, buildup, structural, wallTotal, outerW, outerD } = getNetDims();
+  $('netW').textContent = netW.toFixed(1);
+  $('netD').textContent = netD.toFixed(1);
+  $('netBuildupNote').textContent = `（打底尺寸扣磚粘${buildup.toFixed(1)}×2=淨${netW.toFixed(1)}×${netD.toFixed(1)} cm；外框加RC${structural.toFixed(0)} cm）`;
+}
+
+
+function getScale(){
+  const wrap=$('floorCanvasWrap');
+  const maxW=Math.max(300,(wrap.clientWidth||600)-4);
+  const {outerW}=getNetDims();
+  const sc0=(maxW-80)/outerW;
+  return Math.max(0.4,Math.min(6, sc0)) * state.zoom;
+}
+
+// ============================
+// COLUMN HELPERS
+// ============================
+function getColumns(){
+  if(!state.columns.enabled) return {tl:{w:0,d:0},tr:{w:0,d:0},bl:{w:0,d:0},br:{w:0,d:0}};
+  return state.columns;
+}
+
+// Returns column rects in ROOM coords (including wall buildup space)
+// Columns also have buildup on their exposed inner faces
+function getColumnRects(){
+  const cols=getColumns();
+  const {W,D}=state.room;
+  const rects=[];
+  if(cols.tl.w>0&&cols.tl.d>0) rects.push({x:0,y:0,w:cols.tl.w,h:cols.tl.d,corner:'tl'});
+  if(cols.tr.w>0&&cols.tr.d>0) rects.push({x:W-cols.tr.w,y:0,w:cols.tr.w,h:cols.tr.d,corner:'tr'});
+  if(cols.bl.w>0&&cols.bl.d>0) rects.push({x:0,y:D-cols.bl.d,w:cols.bl.w,h:cols.bl.d,corner:'bl'});
+  if(cols.br.w>0&&cols.br.d>0) rects.push({x:W-cols.br.w,y:D-cols.br.d,w:cols.br.w,h:cols.br.d,corner:'br'});
+  return rects;
+}
+// Net-space column rects (offset by buildup); also expand by buildup on inner edges
+function getColumnRectsNet(buildup){
+  // Same as getColumnRects but in net (tiling) coordinate space
+  // Since input W/D IS the net space, this is identical
+  return getColumnRects();
+}
+
+// Check if a tile rect (cm) overlaps any column
+function tileOverlapsColumn(tx,ty,tw,th){
+  for(const c of getColumnRects()){
+    if(tx<c.x+c.w && tx+tw>c.x && ty<c.y+c.h && ty+th>c.y) return true;
+  }
+  return false;
+}
+
+// ============================
+// DRAW FLOOR
+// ============================
+const floorCanvas=$('floorCanvas');
+const fCtx=floorCanvas.getContext('2d');
+
+function tileOverlapsColumnNet(rx,ry,tw,th,buildup){
+  for(const c of getColumnRectsNet(buildup)){
+    if(rx<c.x+c.w && rx+tw>c.x && ry<c.y+c.h && ry+th>c.y) return true;
+  }
+  return false;
+}
+function tileFullyInsideColumnNet(rx,ry,tw,th,buildup){
+  for(const c of getColumnRectsNet(buildup)){
+    if(rx>=c.x && ry>=c.y && rx+tw<=c.x+c.w && ry+th<=c.y+c.h) return true;
+  }
+  return false;
+}
+
+// Draw hatched wall buildup strips on 4 sides
+// Draw tile+adhesive layer strips (inner layer over structural)
+function drawTileAdhesiveLayer(sc,ox,oy,oW,oD,ssc,bsc){
+  // oW/oD = outer dimensions (structural included)
+  // strips between structural outer edge (ssc) and net area (ssc+bsc)
+  if(bsc<1) return;
+  const owsc=oW*sc, odsc=oD*sc;
+  fCtx.save();
+  fCtx.fillStyle='rgba(80,100,160,0.32)';
+  fCtx.fillRect(ox+ssc, oy, owsc-ssc*2, bsc);              // top
+  fCtx.fillRect(ox+ssc, oy+odsc-bsc, owsc-ssc*2, bsc);     // bottom
+  fCtx.fillRect(ox, oy+ssc, bsc, odsc-ssc*2);              // left
+  fCtx.fillRect(ox+owsc-bsc, oy+ssc, bsc, odsc-ssc*2);     // right
+  fCtx.strokeStyle='rgba(40,60,160,0.22)'; fCtx.lineWidth=0.7;
+  [[ox+ssc,oy,owsc-ssc*2,bsc],[ox+ssc,oy+odsc-bsc,owsc-ssc*2,bsc],
+   [ox,oy+ssc,bsc,odsc-ssc*2],[ox+owsc-bsc,oy+ssc,bsc,odsc-ssc*2]].forEach(([sx,sy,sw,sh])=>{
+    fCtx.save(); fCtx.beginPath(); fCtx.rect(sx,sy,sw,sh); fCtx.clip();
+    for(let i=-sh;i<sw+sh;i+=7){ fCtx.beginPath(); fCtx.moveTo(sx+i,sy); fCtx.lineTo(sx+i+sh,sy+sh); fCtx.stroke(); }
+    fCtx.restore();
+  });
+  if(ssc>14){
+    fCtx.fillStyle='rgba(30,35,50,0.60)';
+    fCtx.font=`bold ${Math.min(12,Math.max(8,ssc*.38))}px sans-serif`;
+    fCtx.textAlign='center'; fCtx.textBaseline='middle';
+    fCtx.fillText('RC', ox+owsc/2, oy+ssc/2);
+    fCtx.fillText('RC', ox+owsc/2, oy+odsc-ssc/2);
+    fCtx.save(); fCtx.translate(ox+ssc/2, oy+odsc/2); fCtx.rotate(-Math.PI/2); fCtx.fillText('RC',0,0); fCtx.restore();
+    fCtx.save(); fCtx.translate(ox+owsc-ssc/2, oy+odsc/2); fCtx.rotate(Math.PI/2); fCtx.fillText('RC',0,0); fCtx.restore();
+  }
+  fCtx.restore();
+}
+
+function drawFloor(){
+  const sc=getScale();
+  const {netW,netD,buildup,structural,wallTotal,outerW,outerD}=getNetDims();
+  const tw=state.floorTile.w/10;
+  const th=state.floorTile.h/10;
+  const grout=state.floorTile.grout/10;
+  const stepX=tw+grout, stepY=th+grout;
+  const offX=state.offset.x/10, offY=state.offset.y/10;
+  const layout=state.floorLayout;
+  const PAD=32;
+
+  // Canvas sized to outer (structural) box
+  const wtsc=wallTotal*sc;
+  const bsc=buildup*sc;
+  const ssc=structural*sc;
+  const floorW=netW*sc, floorH=netD*sc;
+
+  floorCanvas.width=Math.round(outerW*sc+PAD*2+40);
+  floorCanvas.height=Math.round(outerD*sc+PAD*2+24);
+  fCtx.clearRect(0,0,floorCanvas.width,floorCanvas.height);
+  fCtx.fillStyle='#c8cdd8'; fCtx.fillRect(0,0,floorCanvas.width,floorCanvas.height);
+
+  // ox/oy = top-left of OUTER (structural) box
+  const ox=PAD, oy=PAD;
+  // floorX/floorY = top-left of NET tiling area
+  const floorX=ox+wtsc, floorY=oy+wtsc;
+
+  // ── Structural strips (outside net area) ──
+  fCtx.fillStyle='#9aa0ae';
+  // top strip
+  fCtx.fillRect(ox, oy, outerW*sc, ssc);
+  // bottom strip
+  fCtx.fillRect(ox, oy+outerD*sc-ssc, outerW*sc, ssc);
+  // left strip (between top/bottom)
+  fCtx.fillRect(ox, oy+ssc, ssc, outerD*sc-ssc*2);
+  // right strip
+  fCtx.fillRect(ox+outerW*sc-ssc, oy+ssc, ssc, outerD*sc-ssc*2);
+  // hatching
+  fCtx.save();
+  fCtx.strokeStyle='rgba(0,0,0,.13)'; fCtx.lineWidth=0.8;
+  [[ox,oy,outerW*sc,ssc],[ox,oy+outerD*sc-ssc,outerW*sc,ssc],
+   [ox,oy+ssc,ssc,outerD*sc-ssc*2],[ox+outerW*sc-ssc,oy+ssc,ssc,outerD*sc-ssc*2]].forEach(([sx,sy,sw,sh])=>{
+    fCtx.save(); fCtx.beginPath(); fCtx.rect(sx,sy,sw,sh); fCtx.clip();
+    for(let i=-sh;i<sw+sh;i+=9){ fCtx.beginPath(); fCtx.moveTo(sx+i,sy); fCtx.lineTo(sx+i+sh,sy+sh); fCtx.stroke(); }
+    fCtx.restore();
+  });
+  fCtx.restore();
+
+  // ── Tile adhesive layer strips (between structural and net area) ──
+  drawTileAdhesiveLayer(sc,ox,oy,outerW,outerD,ssc,bsc); // tile+adhesive strips
+
+  // ── Net tiling area background ──
+  fCtx.fillStyle='#dde2ea'; fCtx.fillRect(floorX,floorY,floorW,floorH);
+
+  // tiles inside net area
+  fCtx.save();
+  fCtx.beginPath(); fCtx.rect(floorX,floorY,floorW,floorH); fCtx.clip();
+  fCtx.fillStyle='#dde2ea'; fCtx.fillRect(floorX,floorY,floorW,floorH);
+
+  let full=0,cut=0;
+  const startX=offX%stepX, startY=offY%stepY;
+  const cols2=Math.ceil((netW-startX)/stepX)+3;
+  const rows2=Math.ceil((netD-startY)/stepY)+3;
+
+  for(let r=-1;r<rows2;r++){
+    for(let c=-1;c<cols2;c++){
+      let rx=startX+c*stepX;
+      let ry=startY+r*stepY;
+      if(layout==='h_half') rx+=(r%2===0?0:stepX/2);
+      else if(layout==='h_third') rx+=(r%3)*stepX/3;
+      else if(layout==='v_half') ry+=(c%2===0?0:stepY/2);
+      else if(layout==='v_third') ry+=(c%3)*stepY/3;
+      const isOut=rx+tw<=0||rx>=netW||ry+th<=0||ry>=netD;
+      if(isOut) continue;
+      // Skip tiles fully inside column, but show cut tiles at column edge
+      if(tileFullyInsideColumnNet(rx,ry,tw,th,buildup)) continue;
+      const overlapCol=tileOverlapsColumnNet(rx,ry,tw,th,buildup);
+      const isFull=rx>=0&&ry>=0&&rx+tw<=netW&&ry+th<=netD&&!overlapCol;
+      if(isFull){full++;fCtx.fillStyle='#6fa8dc';}
+      else{cut++;fCtx.fillStyle='#e06c4a';}
+      const px=floorX+rx*sc, py=floorY+ry*sc, pw=tw*sc, ph=th*sc;
+      if(overlapCol){
+        // Clip tile to exclude column area
+        fCtx.save();
+        fCtx.beginPath(); fCtx.rect(floorX,floorY,floorW,floorH);
+        // subtract column rects from clip
+        const colsNet=getColumnRectsNet(buildup);
+        colsNet.forEach(c=>{
+          // draw clip path around column (exclude column from tile draw)
+          // Use even-odd fill to punch hole
+        });
+        fCtx.rect(px,py,pw,ph);
+        // Simple approach: just draw tile then overdraw column body
+        fCtx.fillRect(px+.5,py+.5,pw-1,ph-1);
+        fCtx.strokeStyle='rgba(255,255,255,.45)'; fCtx.lineWidth=.5;
+        fCtx.strokeRect(px+.5,py+.5,pw-1,ph-1);
+        fCtx.restore();
+        // Redraw column area with correct style over tile
+        colsNet.forEach(c=>{
+          const cpx2=floorX+c.x*sc, cpy2=floorY+c.y*sc, cpw2=c.w*sc, cph2=c.h*sc;
+          const ct2=(state.columns[c.corner]||{}).type||'col';
+          fCtx.save(); fCtx.beginPath(); fCtx.rect(cpx2,cpy2,cpw2,cph2); fCtx.clip();
+          if(ct2==='pipe'){
+            fCtx.fillStyle='#c8bfa0'; fCtx.fillRect(cpx2,cpy2,cpw2,cph2);
+          } else {
+            fCtx.fillStyle='#9aa0ae'; fCtx.fillRect(cpx2,cpy2,cpw2,cph2);
+            fCtx.strokeStyle='rgba(0,0,0,.13)'; fCtx.lineWidth=0.8;
+            for(let i=-cph2;i<cpw2+cph2;i+=9){fCtx.beginPath();fCtx.moveTo(cpx2+i,cpy2);fCtx.lineTo(cpx2+i+cph2,cpy2+cph2);fCtx.stroke();}
+          }
+          fCtx.restore();
+        });
+      } else {
+        fCtx.fillRect(px+.5,py+.5,pw-1,ph-1);
+        fCtx.strokeStyle='rgba(255,255,255,.45)'; fCtx.lineWidth=.5;
+        fCtx.strokeRect(px+.5,py+.5,pw-1,ph-1);
+      }
+    }
+  }
+  fCtx.restore();
+
+  // (tile adhesive layer drawn above tiles)
+
+  // outer structural border
+  fCtx.strokeStyle='#334'; fCtx.lineWidth=2.5;
+  fCtx.strokeRect(ox+1,oy+1,outerW*sc-2,outerD*sc-2);
+  // net area solid blue border
+  fCtx.strokeStyle='rgba(26,106,245,.6)'; fCtx.lineWidth=1.5; fCtx.setLineDash([4,3]);
+  fCtx.strokeRect(floorX,floorY,floorW,floorH); fCtx.setLineDash([]);
+
+  // columns (drawn from floorX/floorY)
+  for(const col of getColumnRects()){
+    const cpx=floorX+col.x*sc, cpy=floorY+col.y*sc, cpw=col.w*sc, cph=col.h*sc;
+    const colType=(state.columns[col.corner]||{}).type||'col';
+    const isPipe=colType==='pipe';
+
+    fCtx.save(); fCtx.beginPath(); fCtx.rect(cpx,cpy,cpw,cph); fCtx.clip();
+
+    if(isPipe){
+      // 管道間: light warm fill + horizontal lines
+      fCtx.fillStyle='#c8bfa0'; fCtx.fillRect(cpx,cpy,cpw,cph);
+      fCtx.strokeStyle='rgba(80,60,20,.25)'; fCtx.lineWidth=0.8;
+      for(let y=cpy;y<cpy+cph;y+=5){fCtx.beginPath();fCtx.moveTo(cpx,y);fCtx.lineTo(cpx+cpw,y);fCtx.stroke();}
+    } else {
+      // 柱 / 其他房間: same RC grey with diagonal hatching (identical to outer wall)
+      fCtx.fillStyle='#9aa0ae'; fCtx.fillRect(cpx,cpy,cpw,cph);
+      fCtx.strokeStyle='rgba(0,0,0,.13)'; fCtx.lineWidth=0.8;
+      for(let i=-cph;i<cpw+cph;i+=9){fCtx.beginPath();fCtx.moveTo(cpx+i,cpy);fCtx.lineTo(cpx+i+cph,cpy+cph);fCtx.stroke();}
+    }
+    fCtx.restore();
+
+    // Border
+    fCtx.strokeStyle='#334'; fCtx.lineWidth=2;
+    fCtx.strokeRect(cpx+0.5,cpy+0.5,cpw-1,cph-1);
+
+    // Label
+    const lbl=isPipe?'管':colType==='other'?'他':'柱';
+    fCtx.fillStyle='rgba(0,0,0,.8)';
+    fCtx.font=`bold ${Math.min(18,Math.max(11,Math.min(cpw,cph)*.45))}px sans-serif`;
+    fCtx.textAlign='center'; fCtx.textBaseline='middle';
+    fCtx.fillText(lbl, cpx+cpw/2, cpy+cph/2);
+  }
+
+  drawOpeningsOnFloor(sc,ox,oy,floorX,floorY,buildup);
+  if(state.threshold) drawThresholdOnFloor(sc,floorX,floorY,netW,netD);
+  drawPlacedFixtures(sc,floorX,floorY);
+  drawFloorDims(sc,ox,oy,netW,netD,PAD,netW,netD,buildup);
+
+  const total=Math.ceil((full+cut)*1.1);
+  $('fsFull').textContent=full; $('fsCut').textContent=cut; $('fsTotal').textContent=total;
+  $('fsArea').textContent=((netW/100)*(netD/100)).toFixed(2);
+  $('fsTrim').textContent=Math.ceil((netW+netD)*2/state.room.trimW);
+  updateNetDimDisplay();
+}
+
+function drawOpeningsOnFloor(sc,ox,oy,floorX,floorY,buildup){
+  const {netW,netD,structural,wallTotal}=getNetDims();
+  const wtsc=wallTotal*sc; // full wall strip
+  const bsc=buildup*sc;   // tile+adhesive layer
+  const ssc=structural*sc; // structural
+  const FONT_SCALE=2.4;
+
+  state.openings.forEach((op,i)=>{
+    const isSel=selectedItem&&selectedItem.type==='opening'&&selectedItem.idx===i;
+
+    // DRAIN: position is absolute in net space
+    if(op.type==='drain'){
+      const cx=floorX+(op.drainX||op.pos)*sc;
+      const cy=floorY+(op.drainY||op.pos)*sc;
+      const r=Math.max(6,(op.width||15)*sc/2);
+      fCtx.fillStyle='#555';
+      fCtx.beginPath(); fCtx.arc(cx,cy,r,0,Math.PI*2); fCtx.fill();
+      fCtx.strokeStyle=isSel?'#e03030':'#222'; fCtx.lineWidth=isSel?3:1.5; fCtx.stroke();
+      // cross lines
+      fCtx.strokeStyle='rgba(255,255,255,.7)'; fCtx.lineWidth=1;
+      fCtx.beginPath(); fCtx.moveTo(cx-r*.7,cy); fCtx.lineTo(cx+r*.7,cy); fCtx.stroke();
+      fCtx.beginPath(); fCtx.moveTo(cx,cy-r*.7); fCtx.lineTo(cx,cy+r*.7); fCtx.stroke();
+      fCtx.fillStyle='#fff'; fCtx.font=`bold ${Math.max(10,r*.7)}px sans-serif`;
+      fCtx.textAlign='center'; fCtx.textBaseline='middle';
+      fCtx.fillText('排',cx,cy);
+      return;
+    }
+
+    // Opening cuts through FULL wall strip (structural + tile+adhesive)
+    let px,py,pw,ph;
+    const opW=op.width*sc;
+    if(op.wall===1){
+      px = floorX + op.pos*sc;
+      py = floorY + netD*sc;   // top of W1 full strip
+      pw = opW;
+      ph = wtsc;               // full wall thickness
+    } else if(op.wall===3){
+      px = floorX + op.pos*sc;
+      py = oy;                 // top of room (W3 strip starts here)
+      pw = opW;
+      ph = wtsc;
+    } else if(op.wall===2){
+      px = ox;
+      py = floorY + op.pos*sc;
+      pw = wtsc;
+      ph = opW;
+    } else {
+      px = floorX + netW*sc;
+      py = floorY + op.pos*sc;
+      pw = wtsc;
+      ph = opW;
+    }
+
+    if(op.type==='window'){
+      fCtx.fillStyle='rgba(180,215,245,.9)';
+      fCtx.fillRect(px,py,pw,ph);
+      fCtx.strokeStyle=isSel?'#e03030':'#2a608a'; fCtx.lineWidth=isSel?2.5:2;
+      fCtx.strokeRect(px,py,pw,ph);
+      // window lines
+      fCtx.strokeStyle='rgba(42,96,138,.6)'; fCtx.lineWidth=1;
+      if(op.wall===1||op.wall===3){
+        fCtx.beginPath(); fCtx.moveTo(px+pw*.5,py); fCtx.lineTo(px+pw*.5,py+ph); fCtx.stroke();
+      } else {
+        fCtx.beginPath(); fCtx.moveTo(px,py+ph*.5); fCtx.lineTo(px+pw,py+ph*.5); fCtx.stroke();
+      }
+      fCtx.fillStyle='rgba(20,60,120,.85)';
+      fCtx.font=`bold ${Math.max(11,Math.min(pw,ph)*FONT_SCALE*.25)}px sans-serif`;
+      fCtx.textAlign='center'; fCtx.textBaseline='middle';
+      fCtx.fillText('窗',px+pw/2,py+ph/2);
+
+    } else if(op.type==='door'||op.type==='door75'){
+      // Opening: clear the wall strip (white gap)
+      fCtx.fillStyle='rgba(240,245,255,.95)';
+      fCtx.fillRect(px,py,pw,ph);
+      fCtx.strokeStyle=isSel?'#e03030':'rgba(30,60,160,.5)';
+      fCtx.lineWidth=isSel?2:1; fCtx.strokeRect(px,py,pw,ph);
+
+      // Door leaf: sits inside structural zone
+      // W1: leaf at innermost face of structural (py+0 = start of full strip, move inward by bsc to get to structural face)
+      const lt=(op.leafThick||4)*sc;
+      let lpx,lpy,lpw,lph;
+      if(op.wall===1){
+        lpx=px; lpy=py+bsc; lpw=pw; lph=lt; // bsc from net edge = adhesive face
+      } else if(op.wall===3){
+        lpx=px; lpy=py+wtsc-bsc-lt; lpw=pw; lph=lt;
+      } else if(op.wall===2){
+        lpx=px+bsc; lpy=py; lpw=lt; lph=ph;
+      } else {
+        lpx=px+wtsc-bsc-lt; lpy=py; lpw=lt; lph=ph;
+      }
+      fCtx.fillStyle='rgba(140,210,160,.85)';
+      fCtx.fillRect(lpx,lpy,lpw,lph);
+      fCtx.strokeStyle='#3a8a50'; fCtx.lineWidth=1.5;
+      fCtx.strokeRect(lpx,lpy,lpw,lph);
+
+      // Door swing arc from hinge corner
+      const swing=op.swing||'cw';
+      const arcR=(op.wall===1||op.wall===3)?opW:opW;
+      fCtx.beginPath();
+      fCtx.strokeStyle='rgba(255,255,255,.90)'; fCtx.lineWidth=2.5; fCtx.setLineDash([6,3]);
+      if(op.wall===1){
+        const hx=swing==='cw'?px:px+pw;
+        const hy=floorY+netD*sc;
+        fCtx.moveTo(hx,hy); fCtx.arc(hx,hy,opW,swing==='cw'?-Math.PI/2:-Math.PI/2+Math.PI/2,swing==='cw'?0:-Math.PI);
+      } else if(op.wall===3){
+        const hx=swing==='cw'?px+pw:px;
+        const hy=floorY;
+        fCtx.moveTo(hx,hy); fCtx.arc(hx,hy,opW,swing==='ccw'?Math.PI/2:Math.PI/2,swing==='ccw'?Math.PI:0);
+      } else if(op.wall===2){
+        const hx=floorX;
+        const hy=swing==='cw'?py:py+ph;
+        fCtx.moveTo(hx,hy); fCtx.arc(hx,hy,opW,swing==='cw'?0:Math.PI,swing==='cw'?Math.PI/2:-Math.PI/2);
+      } else {
+        const hx=floorX+netW*sc;
+        const hy=swing==='ccw'?py:py+ph;
+        fCtx.moveTo(hx,hy); fCtx.arc(hx,hy,opW,swing==='ccw'?Math.PI:0,swing==='ccw'?Math.PI/2:-Math.PI/2);
+      }
+      fCtx.stroke(); fCtx.setLineDash([]);
+
+      // label: show width above threshold strip (in net area, near wall)
+      const lblText = (op.label||'') ? `${op.label}` : `${op.width}cm`;
+      fCtx.fillStyle='rgba(20,40,100,.92)';
+      fCtx.font=`bold ${Math.max(11,Math.min(pw*0.18,14))}px sans-serif`;
+      fCtx.textAlign='center'; fCtx.textBaseline='bottom';
+      // Position label inside net area just above the wall strip
+      let lblX=px+pw/2, lblY;
+      if(op.wall===1) lblY=floorY+netD*sc-4;          // above W1 strip
+      else if(op.wall===3) lblY=floorY+wtsc+4;
+      else if(op.wall===2) lblY=py+ph/2;
+      else lblY=py+ph/2;
+      fCtx.textBaseline='bottom';
+      if(op.wall===1||op.wall===3){
+        // Draw small label box
+        const m=fCtx.measureText(lblText);
+        fCtx.fillStyle='rgba(255,255,255,.85)';
+        fCtx.fillRect(lblX-m.width/2-3,lblY-14,m.width+6,14);
+        fCtx.fillStyle='rgba(20,40,100,.92)'; fCtx.fillText(lblText,lblX,lblY);
+      } else {
+        fCtx.fillStyle='rgba(20,40,100,.85)';
+        fCtx.font=`bold ${Math.max(10,Math.min(pw,ph)*FONT_SCALE*.22)}px sans-serif`;
+        fCtx.textAlign='center'; fCtx.textBaseline='middle';
+        fCtx.fillText(lblText,px+pw/2,py+ph/2);
+      }
+    }
+
+    if(isSel){
+      fCtx.strokeStyle='rgba(224,80,80,.6)'; fCtx.lineWidth=5; fCtx.setLineDash([5,3]);
+      fCtx.strokeRect(px-2,py-2,pw+4,ph+4); fCtx.setLineDash([]);
+    }
+  });
+}
+
+function drawThresholdOnFloor(sc,floorX,floorY,netW,netD){
+  const t=state.threshold;
+  const {buildup,structural,wallTotal}=getNetDims();
+  const bsc=buildup*sc, ssc=structural*sc, wtsc=wallTotal*sc;
+  const wid=t.width||6;
+  const widsc=wid*sc;
+
+  // Auto-align with door on W1 if present, else full netW
+  const door=state.openings.find(op=>(op.type==='door'||op.type==='door75')&&op.wall===1);
+  const thLeft = door ? door.pos : 0;
+  const thW    = door ? door.width : netW;
+  const lt     = door ? (door.leafThick||4)*sc : 0;
+
+  // Threshold position: just outside door leaf (door leaf at py+bsc, leaf thickness lt)
+  const py=floorY+netD*sc;    // inner face of W1 strip
+  const ty=py+bsc+lt;          // after tile-adhesive layer and door leaf
+  const availH=ssc-lt;         // remaining depth in structural zone
+
+  const th=Math.min(widsc, Math.max(availH,3));
+  const tx=floorX+thLeft*sc;
+
+  fCtx.fillStyle='#c9a96e';
+  fCtx.fillRect(tx, ty, thW*sc, th);
+  fCtx.strokeStyle='#a07040'; fCtx.lineWidth=1.5;
+  fCtx.strokeRect(tx, ty, thW*sc, th);
+  const lbl=t.label?`${t.label}(${wid}cm)`:`門檻${wid}cm`;
+  fCtx.fillStyle='rgba(0,0,0,.8)'; fCtx.font=`bold ${Math.max(9,Math.min(thW*sc*.07,12))}px sans-serif`;
+  fCtx.textAlign='center'; fCtx.textBaseline='middle';
+  fCtx.fillText(lbl, tx+thW*sc/2, ty+th/2);
+}
+
+function drawPlacedFixtures(sc,floorX,floorY){
+  state.placedFixtures.forEach((pf,i)=>{
+    const isSel=selectedItem&&selectedItem.type==='fixture'&&selectedItem.idx===i;
+    const px=floorX+pf.x*sc, py=floorY+pf.y*sc, pw=pf.w*sc, ph=pf.d*sc;
+    const lib=state.fixtures.find(f=>f.id===pf.fixtureId);
+    fCtx.save(); fCtx.translate(px+pw/2,py+ph/2); fCtx.rotate((pf.angle||0)*Math.PI/180);
+    if(lib&&imgCache[lib.id]){
+      fCtx.drawImage(imgCache[lib.id],-pw/2,-ph/2,pw,ph);
+    } else {
+      fCtx.fillStyle='rgba(100,200,140,.6)'; fCtx.fillRect(-pw/2,-ph/2,pw,ph);
+      fCtx.strokeStyle='#2a8a50'; fCtx.lineWidth=1.5; fCtx.strokeRect(-pw/2,-ph/2,pw,ph);
+      fCtx.fillStyle='rgba(0,0,0,.7)'; fCtx.font=`${Math.min(13,Math.min(pw,ph)*.35)}px sans-serif`;
+      fCtx.textAlign='center'; fCtx.textBaseline='middle'; fCtx.fillText(lib?lib.name:'設備',0,0);
+    }
+    if(isSel){
+      fCtx.strokeStyle='rgba(224,80,80,.8)'; fCtx.lineWidth=3; fCtx.setLineDash([5,3]);
+      fCtx.strokeRect(-pw/2-3,-ph/2-3,pw+6,ph+6); fCtx.setLineDash([]);
+      fCtx.fillStyle='#e03030'; fCtx.font='10px sans-serif'; fCtx.textAlign='center'; fCtx.textBaseline='top';
+      fCtx.fillText(`${pf.w}×${pf.d}cm`,-pw/2,ph/2+2);
+    }
+    fCtx.restore();
+  });
+}
+
+function drawFloorDims(sc,ox,oy,W,D,PAD,netW,netD,buildup){
+  const {wallTotal,outerW,outerD}=getNetDims();
+  const wtsc=wallTotal*sc;
+  const owsc=outerW*sc, odsc=outerD*sc;
+  const fX=ox+wtsc, fY=oy+wtsc; // floorX/Y
+
+  // ── Outer structural dim (outside box) ──
+  fCtx.fillStyle='#445'; fCtx.font='bold 12px sans-serif'; fCtx.textAlign='center';
+  fCtx.fillText(`外${outerW.toFixed(0)}cm`, ox+owsc/2, oy+odsc+14);
+  // Right side: outer dim at +16 (close to wall), W4 label at +38 (further out)
+  fCtx.save(); fCtx.translate(ox+owsc+16, oy+odsc/2); fCtx.rotate(Math.PI/2);
+  fCtx.fillText(`外${outerD.toFixed(0)}cm`, 0, 0); fCtx.restore();
+
+  // ── Net (input) dims — inside net area, prominent ──
+  fCtx.fillStyle='#3a4050'; fCtx.font='bold 13px sans-serif'; fCtx.textAlign='center';
+  fCtx.fillText(`${netW}cm`, fX+netW*sc/2, fY+netD*sc-8);
+  fCtx.save(); fCtx.translate(fX+8, fY+netD*sc/2); fCtx.rotate(-Math.PI/2);
+  fCtx.fillText(`${netD}cm`, 0, 0); fCtx.restore();
+
+  // ── Wall labels ──
+  const drawWallLabel=(text,cx,cy,rot)=>{
+    fCtx.save(); fCtx.translate(cx,cy);
+    if(rot) fCtx.rotate(rot);
+    fCtx.font='bold 14px sans-serif'; fCtx.fillStyle='#1a3388';
+    fCtx.textAlign='center'; fCtx.textBaseline='middle';
+    const m=fCtx.measureText(text);
+    fCtx.fillStyle='rgba(255,255,255,.82)';
+    fCtx.fillRect(-m.width/2-3,-8,m.width+6,16);
+    fCtx.fillStyle='#1a3388'; fCtx.fillText(text,0,0);
+    fCtx.restore();
+  };
+  drawWallLabel('W3', ox+owsc/2, oy-13);
+  drawWallLabel('W1', ox+owsc/2, oy+odsc+26);
+  drawWallLabel('W2', ox-22, oy+odsc/2, -Math.PI/2);
+  drawWallLabel('W4', ox+owsc+52, oy+odsc/2, Math.PI/2);
+}
+
+// ============================
+// DRAW WALL EXPAND
+// ============================
+const wallCanvas=$('wallExpandCanvas');
+const wCtx=wallCanvas.getContext('2d');
+
+function drawWallExpand(){
+  const {W,D,tileH}=state.room;
+  const {netW,netD,buildup,structural}=getNetDims();
+  const tw=state.wallTile.w/10, th_t=state.wallTile.h/10;
+  const grout=state.wallTile.grout/10;
+  const stepX=tw+grout, stepY=th_t+grout;
+  const layout=state.wallLayout;
+  const wallH=tileH;
+  const SC=1.5, PAD=32, GAP=22;
+
+  const walls=[
+    {id:'W1',len:netW,label:`W1 (淨${netW.toFixed(1)})`,offKey:'w1'},
+    {id:'W2',len:netD,label:`W2 (淨${netD.toFixed(1)})`,offKey:'w2'},
+    {id:'W3',len:netW,label:`W3 (淨${netW.toFixed(1)})`,offKey:'w3'},
+    {id:'W4',len:netD,label:`W4 (淨${netD.toFixed(1)})`,offKey:'w4'},
+  ];
+
+  const totalW=walls.reduce((a,wl)=>a+Math.ceil(wl.len*SC)+GAP,0)+PAD*2;
+  const totalH=Math.ceil(wallH*SC)+PAD*2+70;
+  wallCanvas.width=Math.max(500,totalW);
+  wallCanvas.height=Math.max(220,totalH);
+  wCtx.clearRect(0,0,wallCanvas.width,wallCanvas.height);
+  wCtx.fillStyle='#e4e8ef'; wCtx.fillRect(0,0,wallCanvas.width,wallCanvas.height);
+
+  // Helper: draw text with white background box
+  function labelBox(ctx,text,cx,cy,fontSize=13,color='#1a3388'){
+    ctx.save();
+    ctx.font=`bold ${fontSize}px sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    const m=ctx.measureText(text);
+    const bw=m.width+8, bh=fontSize+6;
+    ctx.fillStyle='rgba(255,255,255,.88)';
+    ctx.fillRect(cx-bw/2,cy-bh/2,bw,bh);
+    ctx.fillStyle=color;
+    ctx.fillText(text,cx,cy);
+    ctx.restore();
+  }
+
+  let wFull=0,wCut=0;
+  let curX=PAD;
+
+  walls.forEach((wall,wi)=>{
+    const wLen=wall.len;
+    const offVert=(state.offset[wall.offKey]+state.offset.all)/10;
+    const offHoriz=state.offset.x/10;
+    const pH=Math.ceil(wallH*SC), pW=Math.ceil(wLen*SC);
+    const px=curX, py=PAD+28;
+    const wallOpenings=state.openings.filter(op=>op.wall===(wi+1)&&op.type!=='drain');
+
+    wCtx.fillStyle='#fff'; wCtx.fillRect(px,py,pW,pH);
+    wCtx.save();
+    wCtx.beginPath(); wCtx.rect(px,py,pW,pH); wCtx.clip();
+
+    // ── TILE GRID: start from BOTTOM (ground level), whole tiles first ──
+    // Coordinate: ry=0 at bottom (ground), ry increases upward
+    // Canvas: tpy = py + pH - (ry+th_t)*SC  (invert y)
+    // Start offset: offVert shifts the grid; oy0 = first tile bottom edge from floor
+    const oy0 = offVert>=0 ? offVert%stepY : stepY-((-offVert)%stepY);
+    const ox0 = offHoriz>=0 ? offHoriz%stepX : stepX-((-offHoriz)%stepX);
+
+    // Build list of openings in cm coords for tile exclusion/cut logic
+    const opZones=wallOpenings.map(op=>{
+      if(op.type==='window'){
+        const sillBot=op.sill||80;
+        const winBot=sillBot+(op.height||120);  // top of window from floor
+        return {x0:op.pos,x1:op.pos+op.width,y0:sillBot,y1:winBot, type:'window'};
+      } else {
+        return {x0:op.pos,x1:op.pos+op.width,y0:0,y1:op.height||210, type:'door'};
+      }
+    });
+
+    const numCols=Math.ceil((wLen-ox0)/stepX)+3;
+    const numRows=Math.ceil((wallH-oy0)/stepY)+3;
+
+    for(let r=-1;r<numRows;r++){
+      for(let c=-1;c<numCols;c++){
+        let rx=ox0+c*stepX;
+        let ry=oy0+r*stepY; // ry = distance from floor (bottom)
+
+        if(layout==='h_half') rx+=(r%2===0?0:stepX/2);
+        else if(layout==='h_third') rx+=(r%3)*stepX/3;
+        else if(layout==='v_half') ry+=(c%2===0?0:stepY/2);
+        else if(layout==='v_third') ry+=(c%3)*stepY/3;
+
+        // tile bounds in cm (from floor)
+        const tLeft=rx, tRight=rx+tw;
+        const tBot=ry, tTop=ry+th_t;
+
+        if(tRight<=0||tLeft>=wLen||tTop<=0||tBot>=wallH) continue;
+
+        // Check if FULLY inside any opening → skip (opening void)
+        let fullyInOpening=false;
+        for(const z of opZones){
+          if(tLeft>=z.x0&&tRight<=z.x1&&tBot>=z.y0&&tTop<=z.y1){fullyInOpening=true;break;}
+        }
+        if(fullyInOpening) continue;
+
+        // Determine tile visibility type:
+        // - fully inside wall bounds AND not overlapping any opening edge → full or cut (wall boundary)
+        // - overlapping opening edge (partially in opening) → cut tile
+        let overlapOpening=false;
+        for(const z of opZones){
+          const xOverlap=tLeft<z.x1&&tRight>z.x0;
+          const yOverlap=tBot<z.y1&&tTop>z.y0;
+          if(xOverlap&&yOverlap){overlapOpening=true;break;}
+        }
+
+        const wallCut=tLeft<0||tRight>wLen||tBot<0||tTop>wallH;
+        const isCut=wallCut||overlapOpening;
+        if(isCut){wCut++;wCtx.fillStyle='#e06c4a';}
+        else{wFull++;wCtx.fillStyle='#6fa8dc';}
+
+        // Canvas Y: invert (ry=0 at bottom → tpy near bottom of wall rect)
+        const tpx=px+Math.max(0,rx)*SC;
+        const tpy=py+pH-Math.min(tTop,wallH)*SC;
+        const tpw=(Math.min(tRight,wLen)-Math.max(tLeft,0))*SC;
+        const tph=(Math.min(tTop,wallH)-Math.max(tBot,0))*SC;
+
+        if(tpw<0.5||tph<0.5) continue;
+        wCtx.fillRect(tpx+.5,tpy+.5,tpw-1,tph-1);
+        wCtx.strokeStyle='rgba(255,255,255,.45)'; wCtx.lineWidth=.5;
+        wCtx.strokeRect(tpx+.5,tpy+.5,tpw-1,tph-1);
+        // tile number (only full tiles, not cut)
+        if(!isCut&&tpw>18&&tph>13){
+          wCtx.fillStyle='rgba(0,0,0,.28)'; wCtx.font=`${Math.min(9,tph*.36)}px sans-serif`;
+          wCtx.textAlign='center'; wCtx.textBaseline='middle';
+          wCtx.fillText((r+2)*(numCols+2)+(c+2)+1,tpx+tpw/2,tpy+tph/2);
+        }
+      }
+    }
+
+    // ── DRAW OPENINGS ──
+    wallOpenings.forEach(op=>{
+      const opPx=px+op.pos*SC;
+      const opPw=op.width*SC;
+      let opY,opH;
+      if(op.type==='window'){
+        const sillH=(op.sill||80)*SC;
+        opH=(op.height||120)*SC;
+        opY=py+pH-sillH-opH; // canvas Y from top
+      } else {
+        opH=(op.height||210)*SC;
+        opY=py+pH-opH;
+      }
+      opY=Math.max(py,opY);
+      opH=Math.min(opH,py+pH-opY);
+
+      if(op.type==='window'){
+        wCtx.fillStyle='rgba(195,230,255,.92)';
+        wCtx.fillRect(opPx,opY,opPw,opH);
+        wCtx.strokeStyle='#2a608a'; wCtx.lineWidth=2; wCtx.strokeRect(opPx,opY,opPw,opH);
+        wCtx.strokeStyle='rgba(42,96,138,.35)'; wCtx.lineWidth=1;
+        wCtx.beginPath(); wCtx.moveTo(opPx+opPw/2,opY); wCtx.lineTo(opPx+opPw/2,opY+opH); wCtx.stroke();
+      } else {
+        wCtx.fillStyle='rgba(220,232,255,.92)';
+        wCtx.fillRect(opPx,opY,opPw,opH);
+        wCtx.strokeStyle='#3a5a9a'; wCtx.lineWidth=2; wCtx.strokeRect(opPx,opY,opPw,opH);
+      }
+      // Opening label with white box
+      const lbl=op.label||(op.type==='window'?'窗':'門');
+      const dimLbl=`${lbl} ${op.width}cm`;
+      labelBox(wCtx, dimLbl, opPx+opPw/2, opY+opH/2, 13, '#1a3388');
+
+      // Window sill zone label
+      if(op.type==='window'&&(op.sill||0)>0){
+        const sillPx=py+pH-(op.sill||80)*SC;
+        wCtx.strokeStyle='rgba(180,150,80,.4)'; wCtx.lineWidth=1; wCtx.setLineDash([3,2]);
+        wCtx.beginPath(); wCtx.moveTo(opPx,sillPx); wCtx.lineTo(opPx+opPw,sillPx); wCtx.stroke();
+        wCtx.setLineDash([]);
+        labelBox(wCtx,`台高${op.sill}cm`,opPx+opPw/2,sillPx-8,10,'#8a6020');
+      }
+
+      // Door/window width dimension line at top of opening
+      const dimY=opY-14;
+      if(dimY>py-2){
+        wCtx.strokeStyle='#1a3388'; wCtx.lineWidth=1.2;
+        wCtx.beginPath(); wCtx.moveTo(opPx,dimY+6); wCtx.lineTo(opPx,dimY);
+        wCtx.lineTo(opPx+opPw,dimY); wCtx.lineTo(opPx+opPw,dimY+6); wCtx.stroke();
+        labelBox(wCtx,`${op.width}cm`,opPx+opPw/2,dimY-8,12,'#1a3388');
+      }
+    });
+
+    wCtx.restore();
+
+    // ── BORDER ──
+    wCtx.strokeStyle='#1a3a88'; wCtx.lineWidth=2.5; wCtx.strokeRect(px,py,pW,pH);
+
+    // ── WALL LABEL (large, white box) ──
+    labelBox(wCtx, wall.label, px+pW/2, py-16, 15, '#1a3388');
+
+    // ── BOTTOM DIM: wall width + height ──
+    labelBox(wCtx, `淨${wLen.toFixed(1)}cm × 高${wallH}cm`, px+pW/2, py+pH+16, 11, '#445');
+
+    // ── Dimension arrows on sides ──
+    // Left side height
+    wCtx.strokeStyle='#666'; wCtx.lineWidth=1;
+    wCtx.beginPath(); wCtx.moveTo(px-10,py); wCtx.lineTo(px-10,py+pH); wCtx.stroke();
+    wCtx.beginPath(); wCtx.moveTo(px-14,py+4); wCtx.lineTo(px-10,py); wCtx.lineTo(px-6,py+4); wCtx.stroke();
+    wCtx.beginPath(); wCtx.moveTo(px-14,py+pH-4); wCtx.lineTo(px-10,py+pH); wCtx.lineTo(px-6,py+pH-4); wCtx.stroke();
+    wCtx.save(); wCtx.translate(px-22,py+pH/2); wCtx.rotate(-Math.PI/2);
+    labelBox(wCtx,`${wallH}cm`,0,0,11,'#445');
+    wCtx.restore();
+
+    curX+=pW+GAP;
+  });
+
+  const wsTotal=Math.ceil((wFull+wCut)*1.1);
+  $('wsFull').textContent=wFull; $('wsCut').textContent=wCut; $('wsTotal').textContent=wsTotal;
+  const wallArea=walls.reduce((a,wl)=>a+wl.len/100*wallH/100,0);
+  $('wsArea').textContent=wallArea.toFixed(2);
+}
+
+// ============================
+// OPENINGS LIST
+// ============================
+function updateOpeningsList(){
+  const panel=$('openingsListPanel');
+  const container=$('openingsListContainer');
+  const items=state.openings.filter(op=>op.type!=='drain');
+  const hasThresh=!!state.threshold;
+  if(items.length===0&&!hasThresh){panel.style.display='none';return;}
+  panel.style.display='';
+  container.innerHTML='';
+  items.forEach((op,i)=>{
+    const typeLabel=op.type==='window'?'窗':(op.type==='drain'?'排':'門');
+    const badgeCls=op.type==='window'?'win':'';
+    const div=document.createElement('div');
+    div.className='opening-list-item';
+    const wallName=['','W1(下)','W2(左)','W3(上)','W4(右)'][op.wall]||'';
+    const info=op.type==='window'
+      ?`${op.label||'窗'} | ${wallName} 位${op.pos}cm 寬${op.width}cm 台高${op.sill||0}cm`
+      :`${op.label||'門'} | ${wallName} 位${op.pos}cm 寬${op.width}cm 高${op.height||210}cm`;
+    div.innerHTML=`<span class="opening-badge ${badgeCls}">${typeLabel}</span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${info}</span>
+      <button class="btn btn-sm" data-edit="${i}" style="padding:2px 6px;font-size:11px">✏</button>
+      <button class="btn btn-sm btn-danger" data-remove="${i}" style="padding:2px 6px;font-size:11px">✕</button>`;
+    div.querySelector('[data-remove]').addEventListener('click',()=>{
+      state.openings.splice(i,1); render();
+    });
+    div.querySelector('[data-edit]').addEventListener('click',()=>{
+      // Re-open appropriate modal prefilled
+      if(op.type==='window'){
+        $('winWidth').value=op.width; $('winSill').value=op.sill||80;
+        $('winHeight').value=op.height||120; $('winWall').value=op.wall;
+        $('winPos').value=op.pos; $('winLabel').value=op.label||'';
+        state._editOpeningIdx=i;
+        $('windowModal').classList.add('open');
+      } else {
+        $('doorWidth').value=op.width; $('doorHeight').value=op.height||210;
+        $('doorLeafThick').value=op.leafThick||4; $('doorWall').value=op.wall;
+        $('doorPos').value=op.pos; $('doorSwing').value=op.swing||'cw';
+        $('doorLabel').value=op.label||''; state._doorModalType=op.type;
+        state._editOpeningIdx=i;
+        $('doorModal').classList.add('open');
+      }
+    });
+    container.appendChild(div);
+  });
+  if(hasThresh){
+    const div=document.createElement('div');
+    div.className='opening-list-item';
+    div.innerHTML=`<span class="opening-badge thresh">檻</span>
+      <span style="flex:1">${state.threshold.label||'門檻'} | 寬${state.threshold.width}cm</span>
+      <button class="btn btn-sm" id="editThreshBtn" style="padding:2px 6px;font-size:11px">✏</button>
+      <button class="btn btn-sm btn-danger" id="removeThreshBtn2" style="padding:2px 6px;font-size:11px">✕</button>`;
+    div.querySelector('#editThreshBtn').addEventListener('click',()=>{
+      $('threshLeft').value=state.threshold.left||0;
+      $('threshRight').value=state.threshold.right||0;
+      $('threshWid').value=state.threshold.width||6;
+      $('threshLabel').value=state.threshold.label||'';
+      $('threshModal').classList.add('open');
+    });
+    div.querySelector('#removeThreshBtn2').addEventListener('click',()=>{state.threshold=null;render()});
+    container.appendChild(div);
+  }
+}
+
+// Handle edit mode for door/window modal (overwrite existing instead of push)
+function patchModalApplyForEdit(){
+  // patch doorModalApply to handle edit
+  const origDoorApply=$('doorModalApply').onclick;
+  $('doorModalApply').addEventListener('click',()=>{
+    if(state._editOpeningIdx!=null){
+      const i=state._editOpeningIdx;
+      const wall=+$('doorWall').value, width=+$('doorWidth').value;
+      const {netW,netD}=getNetDims();
+      const maxLen=wall===1||wall===3?netW:netD;
+      state.openings[i]={...state.openings[i], wall, pos:Math.min(+$('doorPos').value,maxLen-width),
+        width, height:+$('doorHeight').value||210, swing:$('doorSwing').value,
+        leafThick:+$('doorLeafThick').value, label:$('doorLabel').value||''};
+      state._editOpeningIdx=null; $('doorModal').classList.remove('open'); render(); updateOpeningsList();
+    }
+  },true);
+  $('winModalApply').addEventListener('click',()=>{
+    if(state._editOpeningIdx!=null){
+      const i=state._editOpeningIdx;
+      const wall=+$('winWall').value, width=+$('winWidth').value;
+      const {netW,netD}=getNetDims();
+      const maxLen=wall===1||wall===3?netW:netD;
+      state.openings[i]={...state.openings[i], wall, pos:Math.min(+$('winPos').value,maxLen-width),
+        width, height:+$('winHeight').value, sill:+$('winSill').value, label:$('winLabel').value||''};
+      state._editOpeningIdx=null; $('windowModal').classList.remove('open'); render(); updateOpeningsList();
+    }
+  },true);
+}
+
+// ============================
+// DRAGGABLE MODALS
+// ============================
+function initDraggableModals(){
+  document.querySelectorAll('.draggable-modal').forEach(modal=>{
+    const handle=modal.querySelector('.drag-handle');
+    if(!handle) return;
+    let dragging=false, ox=0, oy=0, startX=0, startY=0;
+    handle.addEventListener('mousedown',e=>{
+      if(e.target.tagName==='SELECT'||e.target.tagName==='INPUT'||e.target.tagName==='BUTTON') return;
+      dragging=true;
+      const rect=modal.getBoundingClientRect();
+      // Convert to fixed positioning
+      if(!modal.style.position||modal.style.position!=='fixed'){
+        modal.style.position='fixed';
+        modal.style.top=rect.top+'px';
+        modal.style.left=rect.left+'px';
+        modal.style.margin='0';
+      }
+      ox=parseFloat(modal.style.left)||rect.left;
+      oy=parseFloat(modal.style.top)||rect.top;
+      startX=e.clientX; startY=e.clientY;
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove',e=>{
+      if(!dragging) return;
+      modal.style.left=(ox+(e.clientX-startX))+'px';
+      modal.style.top=(oy+(e.clientY-startY))+'px';
+    });
+    document.addEventListener('mouseup',()=>{dragging=false});
+  });
+}
+
+// ============================
+// RENDER
+// ============================
+function render(){
+  drawFloor();
+  drawWallExpand();
+  updatePlacedList();
+  updateOpeningsList();
+}
+
+// ============================
+// CANVAS INTERACTION
+// ============================
+function getCanvasXY(e){
+  const rect=floorCanvas.getBoundingClientRect();
+  const sc=getScale(), PAD=32;
+  const {wallTotal}=getNetDims();
+  const wtsc=wallTotal*sc;
+  return { cx:(e.clientX-rect.left-PAD-wtsc)/sc, cy:(e.clientY-rect.top-PAD-wtsc)/sc };
+}
+
+function hitTestOpening(cx,cy){
+  const {netW,netD,buildup}=getNetDims();
+  for(let i=state.openings.length-1;i>=0;i--){
+    const op=state.openings[i];
+    if(op.type==='drain'){
+      const dx=(op.drainX||op.pos), dy=(op.drainY||op.pos), r=(op.width||15)/2;
+      if(Math.abs(cx-dx)<r&&Math.abs(cy-dy)<r) return i;
+      continue;
+    }
+    // Opening spans full wall strip (structural + buildup)
+    const {wallTotal:wt2}=getNetDims();
+    let bx,by,bw,bh;
+    if(op.wall===1){bx=op.pos;by=netD;bw=op.width;bh=wt2;}
+    else if(op.wall===3){bx=op.pos;by=-wt2;bw=op.width;bh=wt2;}
+    else if(op.wall===2){bx=-wt2;by=op.pos;bw=wt2;bh=op.width;}
+    else{bx=netW;by=op.pos;bw=wt2;bh=op.width;}
+    if(cx>=bx&&cx<=bx+bw&&cy>=by&&cy<=by+bh) return i;
+  }
+  return -1;
+}
+
+function hitTestFixture(cx,cy){
+  for(let i=state.placedFixtures.length-1;i>=0;i--){
+    const pf=state.placedFixtures[i];
+    if(cx>=pf.x&&cx<=pf.x+pf.w&&cy>=pf.y&&cy<=pf.y+pf.d) return i;
+  }
+  return -1;
+}
+
+floorCanvas.addEventListener('mousedown',e=>{
+  const {cx,cy}=getCanvasXY(e);
+  // placing fixture mode
+  if(placingFixtureId){
+    const lib=state.fixtures.find(f=>f.id===placingFixtureId);
+    if(!lib) return;
+    state.placedFixtures.push({id:uid(),fixtureId:lib.id,x:Math.round(cx-lib.defW/2),y:Math.round(cy-lib.defD/2),w:lib.defW,d:lib.defD,angle:0});
+    notify(`✅ ${lib.name} 已放置`);
+    render();
+    return;
+  }
+
+  // hit test
+  const fi=hitTestFixture(cx,cy);
+  const oi=hitTestOpening(cx,cy);
+  if(fi>=0){
+    selectedItem={type:'fixture',idx:fi};
+    isDragging=true; dragWhat='fixture';
+    const pf=state.placedFixtures[fi];
+    dragStartX=cx; dragStartY=cy; dragOrigX=pf.x; dragOrigY=pf.y;
+  } else if(oi>=0){
+    selectedItem={type:'opening',idx:oi};
+    isDragging=true; dragWhat='opening';
+    const op=state.openings[oi];
+    dragStartX=cx; dragStartY=cy;
+    dragOrigX=op.type==='drain'?(op.drainX||op.pos):op.pos;
+    dragOrigY=op.type==='drain'?(op.drainY||0):0;
+  } else {
+    selectedItem=null;
+  }
+  updateSelectionUI();
+  render();
+});
+
+floorCanvas.addEventListener('mousemove',e=>{
+  if(!isDragging) return;
+  const {cx,cy}=getCanvasXY(e);
+  if(dragWhat==='opening'){
+    const op=state.openings[selectedItem.idx];
+    const {netW,netD}=getNetDims();
+    if(op.type==='drain'){
+      op.drainX=Math.max(0,Math.min(netW,Math.round(dragOrigX+(cx-dragStartX))));
+      op.drainY=Math.max(0,Math.min(netD,Math.round(dragOrigY+(cy-dragStartY))));
+    } else {
+      const dx=cx-dragStartX;
+      const maxPos=(op.wall===1||op.wall===3?netW:netD)-op.width;
+      op.pos=Math.max(0,Math.min(maxPos,Math.round(dragOrigX+dx)));
+    }
+  } else if(dragWhat==='fixture'){
+    const pf=state.placedFixtures[selectedItem.idx];
+    const {netW,netD}=getNetDims();
+    pf.x=Math.max(0,Math.min(netW-pf.w,Math.round(dragOrigX+(cx-dragStartX))));
+    pf.y=Math.max(0,Math.min(netD-pf.d,Math.round(dragOrigY+(cy-dragStartY))));
+  }
+  render();
+});
+
+floorCanvas.addEventListener('mouseup',()=>{isDragging=false;dragWhat=null});
+floorCanvas.addEventListener('mouseleave',()=>{isDragging=false;dragWhat=null});
+
+floorCanvas.addEventListener('dblclick',e=>{
+  const {cx,cy}=getCanvasXY(e);
+  const fi=hitTestFixture(cx,cy);
+  if(fi>=0){
+    state.placedFixtures[fi].angle=((state.placedFixtures[fi].angle||0)+90)%360;
+    // also swap w/d on 90 degree increments
+    const pf=state.placedFixtures[fi];
+    [pf.w,pf.d]=[pf.d,pf.w];
+    render(); notify('🔄 設備旋轉 90°');
+  }
+});
+
+// Touch support
+floorCanvas.addEventListener('touchstart',e=>{e.preventDefault();floorCanvas.dispatchEvent(new MouseEvent('mousedown',{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY}))},{passive:false});
+floorCanvas.addEventListener('touchmove',e=>{e.preventDefault();floorCanvas.dispatchEvent(new MouseEvent('mousemove',{clientX:e.touches[0].clientX,clientY:e.touches[0].clientY}))},{passive:false});
+floorCanvas.addEventListener('touchend',e=>{e.preventDefault();floorCanvas.dispatchEvent(new MouseEvent('mouseup',{}))},{passive:false});
+
+function updateSelectionUI(){
+  const hasSel=selectedItem!==null;
+  $('deleteSelectedBtn').style.display=hasSel?'':'none';
+  $('cancelSelectBtn').style.display=hasSel?'':'none';
+}
+
+// ============================
+// FIXTURE LIBRARY
+// ============================
+function renderFixtureList(){
+  const list=$('fixtureList');
+  const empty=$('fixtureEmptyHint');
+  if(state.fixtures.length===0){empty.style.display='';list.innerHTML='';return;}
+  empty.style.display='none';
+  list.innerHTML='';
+  state.fixtures.forEach((lib,i)=>{
+    const div=document.createElement('div');
+    div.className='fixture-item'+(placingFixtureId===lib.id?' selected':'');
+    div.innerHTML=`
+      ${lib.imgData?`<img class="fixture-thumb" src="${lib.imgData}" alt="${lib.name}">`:`<div class="fixture-thumb-placeholder">🛁</div>`}
+      <div class="fixture-info">
+        <div class="fixture-name">${lib.name}</div>
+        <div class="fixture-size">${lib.defW}×${lib.defD} cm</div>
+      </div>
+      <div class="fixture-actions">
+        <button class="btn btn-sm btn-primary" data-place="${lib.id}" title="放置到平面圖">📍放置</button>
+        <button class="btn btn-sm" data-edit="${i}" title="編輯">✏️</button>
+        <button class="btn btn-sm btn-danger" data-del="${i}" title="刪除">✕</button>
+      </div>`;
+    list.appendChild(div);
+  });
+
+  list.querySelectorAll('[data-place]').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      placingFixtureId=btn.dataset.place;
+      $('cancelPlaceBtn').style.display='';
+      $('activeFixtureName').textContent='放置中: '+state.fixtures.find(f=>f.id===btn.dataset.place)?.name;
+      $('activeFixtureName').style.display='';
+      floorCanvas.style.cursor='crosshair';
+      notify('點擊平面圖放置設備');
+      renderFixtureList();
+    });
+  });
+  list.querySelectorAll('[data-edit]').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      editingFixtureLibIdx=+btn.dataset.edit;
+      const lib=state.fixtures[editingFixtureLibIdx];
+      $('feditName').value=lib.name;
+      $('feditW').value=lib.defW;
+      $('feditD').value=lib.defD;
+      $('fixtureEditModal').classList.add('open');
+    });
+  });
+  list.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      const idx=+btn.dataset.del;
+      const id=state.fixtures[idx].id;
+      state.fixtures.splice(idx,1);
+      state.placedFixtures=state.placedFixtures.filter(pf=>pf.fixtureId!==id);
+      delete imgCache[id];
+      renderFixtureList(); render();
+    });
+  });
+}
+
+function updatePlacedList(){
+  const panel=$('placedFixturesPanel');
+  const list=$('placedList');
+  if(state.placedFixtures.length===0){panel.style.display='none';return;}
+  panel.style.display='';
+  list.innerHTML='';
+  state.placedFixtures.forEach((pf,i)=>{
+    const lib=state.fixtures.find(f=>f.id===pf.fixtureId);
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 8px;border:1px solid var(--border2);border-radius:5px;background:var(--surface2);font-size:12px';
+    div.innerHTML=`
+      <span style="font-weight:600;flex:1">${lib?lib.name:'未知'}</span>
+      <span style="color:var(--text3)">位置 (${pf.x},${pf.y})cm</span>
+      <span style="color:var(--text3)">${pf.w}×${pf.d}cm</span>
+      <span style="color:var(--text3)">${pf.angle||0}°</span>
+      <input type="number" value="${pf.w}" min="5" max="500" style="width:44px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;font-size:11px" data-pfidx="${i}" data-prop="w">
+      <span style="font-size:11px;color:var(--text3)">×</span>
+      <input type="number" value="${pf.d}" min="5" max="500" style="width:44px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;font-size:11px" data-pfidx="${i}" data-prop="d">
+      <button class="btn btn-sm btn-danger" data-delidx="${i}">✕</button>`;
+    div.querySelectorAll('input[data-pfidx]').forEach(inp=>{
+      inp.addEventListener('change',()=>{state.placedFixtures[+inp.dataset.pfidx][inp.dataset.prop]=+inp.value;render()});
+    });
+    div.querySelector('[data-delidx]').addEventListener('click',()=>{
+      state.placedFixtures.splice(i,1);
+      if(selectedItem&&selectedItem.type==='fixture'&&selectedItem.idx===i) selectedItem=null;
+      render();
+    });
+    list.appendChild(div);
+  });
+}
+
+// ============================
+// BIND ALL
+// ============================
+function bindAll(){
+  // Room
+  bindNum('roomW','W','room'); bindNum('roomD','D','room');
+  bindNum('wallH','wallH','room'); bindNum('tileH','tileH','room'); bindNum('trimW','trimW','room'); bindNum('structThick','structThick','room');
+  bindTxt('wallTileModel','model','wallTile'); bindNum('wallTileW','w','wallTile'); bindNum('wallTileH','h','wallTile');
+  bindNum('wallGrout','grout','wallTile'); bindTxt('wallGroutModel','groutModel','wallTile');
+  bindNum('wallTileThick','thickness','wallTile'); bindNum('wallAdhesive','adhesive','wallTile');
+  bindTxt('floorTileModel','model','floorTile'); bindNum('floorTileW','w','floorTile'); bindNum('floorTileH','h','floorTile');
+  bindNum('floorGrout','grout','floorTile'); bindTxt('floorGroutModel','groutModel','floorTile');
+  $('floorLayout').addEventListener('change',()=>{state.floorLayout=$('floorLayout').value;render()});
+  $('wallLayoutSelect').addEventListener('change',()=>{state.wallLayout=$('wallLayoutSelect').value;render()});
+
+  // Columns
+  $('columnsEnabled').addEventListener('change',()=>{
+    state.columns.enabled=$('columnsEnabled').checked;
+    $('columnsBody').style.display=state.columns.enabled?'':'none';
+    render();
+  });
+  [['col_tl_w','tl','w'],['col_tl_d','tl','d'],['col_tr_w','tr','w'],['col_tr_d','tr','d'],
+   ['col_bl_w','bl','w'],['col_bl_d','bl','d'],['col_br_w','br','w'],['col_br_d','br','d']].forEach(([id,corner,prop])=>{
+    $(id).addEventListener('change',()=>{state.columns[corner][prop]=+$(id).value;render()});
+  });
+  ['tl','tr','bl','br'].forEach(c=>{
+    $(`col_${c}_type`).addEventListener('change',()=>{state.columns[c].type=$(`col_${c}_type`).value;render()});
+  });
+
+  // Sliders
+  bindSlider('offsetX','offsetXVal','x','offset');
+  bindSlider('offsetY','offsetYVal','y','offset');
+  bindSlider('offW1','offW1Val','w1','offset');
+  bindSlider('offW2','offW2Val','w2','offset');
+  bindSlider('offW3','offW3Val','w3','offset');
+  bindSlider('offW4','offW4Val','w4','offset');
+  bindSlider('offAll','offAllVal','all','offset');
+
+  // Zoom
+  $('canvasZoom').addEventListener('input',()=>{
+    state.zoom=$('canvasZoom').value/100;
+    $('zoomLabel').textContent=Math.round(state.zoom*100)+'%';
+    render();
+  });
+
+  // Wall tabs
+  document.querySelectorAll('#wallViewTabs .tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('#wallViewTabs .tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active'); state.wallView=tab.dataset.tab; render();
+    });
+  });
+
+  // Annot
+  $('annotNum').addEventListener('click',()=>{state.annotStyle='num';$('annotNum').classList.add('btn-active');$('annotArch').classList.remove('btn-active');render()});
+  $('annotArch').addEventListener('click',()=>{state.annotStyle='arch';$('annotArch').classList.add('btn-active');$('annotNum').classList.remove('btn-active');render()});
+
+  // Theme
+  $('themeBtn').addEventListener('click',toggleTheme);
+
+  // Openings
+  $('addDoor90').addEventListener('click',()=>openDoorModal('door',90));
+  $('addDoor75').addEventListener('click',()=>openDoorModal('door75',75));
+  $('addWindow').addEventListener('click',()=>openWindowModal());
+  $('addThreshold').addEventListener('click',()=>openThreshModal());
+  $('addDrain').addEventListener('click',()=>openDrainModal());
+
+  // Door modal
+  $('doorModalCancel').addEventListener('click',()=>$('doorModal').classList.remove('open'));
+  $('doorModalApply').addEventListener('click',()=>{
+    const wall=+$('doorWall').value;
+    const width=+$('doorWidth').value;
+    const {netW,netD}=getNetDims();
+    const maxLen=wall===1||wall===3?netW:netD;
+    state.openings.push({
+      type:state._doorModalType||'door', wall,
+      pos:Math.min(+$('doorPos').value,maxLen-width),
+      width, height:+$('doorHeight').value||210,
+      swing:$('doorSwing').value,
+      leafThick:+$('doorLeafThick').value,
+      label:$('doorLabel').value||''
+    });
+    $('doorLabel').value='';
+    $('doorModal').classList.remove('open'); render(); updateOpeningsList();
+  });
+
+  // Window modal
+  $('winModalCancel').addEventListener('click',()=>$('windowModal').classList.remove('open'));
+  $('winModalApply').addEventListener('click',()=>{
+    const wall=+$('winWall').value;
+    const width=+$('winWidth').value;
+    const {netW,netD}=getNetDims();
+    const maxLen=wall===1||wall===3?netW:netD;
+    state.openings.push({
+      type:'window', wall, pos:Math.min(+$('winPos').value,maxLen-width),
+      width, height:+$('winHeight').value, sill:+$('winSill').value,
+      label:$('winLabel').value||''
+    });
+    $('winLabel').value='';
+    $('windowModal').classList.remove('open'); render(); updateOpeningsList();
+  });
+
+  // Drain modal
+  $('drainModalCancel').addEventListener('click',()=>$('drainModal').classList.remove('open'));
+  $('drainModalApply').addEventListener('click',()=>{
+    const {netW,netD}=getNetDims();
+    state.openings.push({
+      type:'drain', wall:0, pos:0,
+      drainX:Math.min(+$('drainX').value,netW), drainY:Math.min(+$('drainY').value,netD),
+      width:+$('drainSize').value, height:+$('drainSize').value
+    });
+    $('drainModal').classList.remove('open'); render();
+  });
+
+  // Save/Load modal
+  $('saveLoadBtn').addEventListener('click',()=>{ refreshSavedList(); $('saveModal').classList.add('open'); });
+  $('saveModalClose').addEventListener('click',()=>$('saveModal').classList.remove('open'));
+  $('saveProjectBtn').addEventListener('click',()=>{
+    const name=$('saveProjectName').value.trim();
+    if(!name){notify('請輸入專案名稱'); return;}
+    const saves=JSON.parse(localStorage.getItem('tileplanner_saves')||'{}');
+    saves[name]={data:getExportState(),saved:new Date().toLocaleString('zh-TW')};
+    localStorage.setItem('tileplanner_saves',JSON.stringify(saves));
+    notify('✅ 專案「'+name+'」已儲存'); refreshSavedList();
+  });
+
+  $('deleteSelectedBtn').addEventListener('click',()=>{
+    if(!selectedItem) return;
+    if(selectedItem.type==='opening') state.openings.splice(selectedItem.idx,1);
+    else if(selectedItem.type==='fixture') state.placedFixtures.splice(selectedItem.idx,1);
+    selectedItem=null; updateSelectionUI(); render();
+  });
+  $('cancelSelectBtn').addEventListener('click',()=>{selectedItem=null;updateSelectionUI();render()});
+
+  // Threshold modal
+  $('addThreshold').addEventListener('click',openThreshModal);
+  $('threshCancel').addEventListener('click',()=>$('threshModal').classList.remove('open'));
+  $('threshApply').addEventListener('click',()=>{
+    state.threshold={
+      width:+$('threshWid').value, label:$('threshLabel').value||''
+    };
+    $('threshModal').classList.remove('open'); render(); updateOpeningsList();
+  });
+  $('threshRemove').addEventListener('click',()=>{state.threshold=null;$('threshModal').classList.remove('open');render();updateOpeningsList()});
+  // Fixture library
+  $('addFixtureFileBtn').addEventListener('click',()=>$('fixtureFileInput').click());
+  $('fixtureFileInput').addEventListener('change',e=>{
+    const files=Array.from(e.target.files);
+    files.forEach(file=>{
+      const reader=new FileReader();
+      reader.onload=ev=>{
+        const id=uid();
+        const name=file.name.replace(/\.[^.]+$/,'');
+        const lib={id,name,imgData:ev.target.result,defW:60,defD:40};
+        state.fixtures.push(lib);
+        // preload image
+        const img=new Image();
+        img.onload=()=>{imgCache[id]=img;render()};
+        img.src=ev.target.result;
+        renderFixtureList();
+        notify(`✅ 已載入: ${name}`);
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value='';
+  });
+
+  $('cancelPlaceBtn').addEventListener('click',()=>{
+    placingFixtureId=null;
+    $('cancelPlaceBtn').style.display='none';
+    $('activeFixtureName').style.display='none';
+    floorCanvas.style.cursor='crosshair';
+    renderFixtureList();
+  });
+
+  // Fixture edit modal
+  $('feditCancel').addEventListener('click',()=>$('fixtureEditModal').classList.remove('open'));
+  $('feditSave').addEventListener('click',()=>{
+    if(editingFixtureLibIdx===null) return;
+    const lib=state.fixtures[editingFixtureLibIdx];
+    lib.name=$('feditName').value;
+    lib.defW=+$('feditW').value;
+    lib.defD=+$('feditD').value;
+    $('fixtureEditModal').classList.remove('open');
+    renderFixtureList(); render(); notify('✅ 設備資訊已更新');
+  });
+
+  // Case info
+  $('caseInfoBtn').addEventListener('click',()=>$('caseModal').classList.add('open'));
+  $('caseModalCancel').addEventListener('click',()=>$('caseModal').classList.remove('open'));
+  $('caseModalSave').addEventListener('click',()=>{
+    state.caseInfo.name=$('caseName').value;
+    state.caseInfo.addr=$('caseAddr').value;
+    state.caseInfo.sub=$('caseSub').value;
+    $('caseModal').classList.remove('open'); notify('✅ 案件資訊已儲存');
+  });
+
+  // Export/Import
+  $('exportJsonBtn').addEventListener('click',exportJSON);
+  $('importJsonBtn').addEventListener('click',()=>$('importFile').click());
+  $('importFile').addEventListener('change',importJSON);
+  $('exportPngBtn').addEventListener('click',exportPNG);
+  $('exportPdfBtn').addEventListener('click',exportPDF);
+  $('exportSvgBtn').addEventListener('click',exportSVG);
+
+  // Close modals on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(ov=>{
+    ov.addEventListener('click',e=>{if(e.target===ov) ov.classList.remove('open')});
+  });
+}
+
+function openDoorModal(type, defaultWidth){
+  state._doorModalType = type;
+  $('doorModalTitle').textContent = type==='door75'?'🚪 門設定（75cm）':'🚪 門設定（90cm）';
+  $('doorWidth').value = defaultWidth||90;
+  $('doorPos').value = 0;
+  $('doorModal').classList.add('open');
+}
+function openWindowModal(){
+  $('windowModal').classList.add('open');
+}
+function openDrainModal(){
+  const {netW,netD}=getNetDims();
+  $('drainX').value = Math.round(netW/2);
+  $('drainY').value = Math.round(netD/2);
+  $('drainModal').classList.add('open');
+}
+
+function refreshSavedList(){
+  const saves=JSON.parse(localStorage.getItem('tileplanner_saves')||'{}');
+  const el=$('savedProjectList');
+  const keys=Object.keys(saves);
+  if(keys.length===0){el.innerHTML='<div style="padding:8px;font-size:12px;color:var(--text3)">尚無已儲存的專案</div>';return;}
+  el.innerHTML='';
+  keys.forEach(name=>{
+    const item=saves[name];
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:8px;padding:5px 8px;border-bottom:1px solid var(--border2);font-size:12px';
+    div.innerHTML=`<span style="flex:1;font-weight:600">${name}</span><span style="color:var(--text3);font-size:11px">${item.saved}</span>
+    <button class="btn btn-sm btn-primary" data-load="${name}">載入</button>
+    <button class="btn btn-sm btn-danger" data-del="${name}">✕</button>`;
+    div.querySelector('[data-load]').addEventListener('click',()=>{
+      const data=saves[name].data;
+      loadState(data); $('saveModal').classList.remove('open'); notify('✅ 已載入：'+name);
+    });
+    div.querySelector('[data-del]').addEventListener('click',()=>{
+      delete saves[name]; localStorage.setItem('tileplanner_saves',JSON.stringify(saves));
+      refreshSavedList(); notify('已刪除：'+name);
+    });
+    el.appendChild(div);
+  });
+}
+
+function loadState(data){
+  if(data.room) Object.assign(state.room,data.room);
+  if(data.wallTile) Object.assign(state.wallTile,data.wallTile);
+  if(data.floorTile) Object.assign(state.floorTile,data.floorTile);
+  if(data.floorLayout) state.floorLayout=data.floorLayout;
+  if(data.wallLayout) state.wallLayout=data.wallLayout;
+  if(data.offset) Object.assign(state.offset,data.offset);
+  if(data.openings) state.openings=data.openings;
+  if(data.threshold!==undefined) state.threshold=data.threshold;
+  if(data.columns) Object.assign(state.columns,data.columns);
+  if(data.fixtures){ state.fixtures=data.fixtures; imgCache={};
+    data.fixtures.forEach(f=>{if(f.imgData){const img=new Image();img.onload=()=>{imgCache[f.id]=img;render()};img.src=f.imgData;}});
+  }
+  if(data.placedFixtures) state.placedFixtures=data.placedFixtures;
+  if(data.caseInfo) Object.assign(state.caseInfo,data.caseInfo);
+  syncUI(); renderFixtureList(); render();
+}
+
+function addOpening(type,width,height){
+  const {netW}=getNetDims();
+  state.openings.push({type,wall:1,pos:Math.max(0,Math.round(netW/2-(width||0)/2)),width:width||10,height:height||10});
+  render();
+}
+function openThreshModal(){
+  if(state.threshold){$('threshLeft').value=state.threshold.left||0;$('threshRight').value=state.threshold.right||0;$('threshWid').value=state.threshold.width||6;}
+  $('threshModal').classList.add('open');
+}
+
+// ============================
+// THEME
+// ============================
+function toggleTheme(){
+  state.darkMode=!state.darkMode;
+  $('themeBtn').textContent=state.darkMode?'☀️ 淺色':'🌙 深色';
+  const d=state.darkMode;
+  const r=document.documentElement.style;
+  r.setProperty('--bg',d?'#1a1d23':'#f0f2f5');
+  r.setProperty('--surface',d?'#22262f':'#fff');
+  r.setProperty('--surface2',d?'#1e2229':'#f5f6f8');
+  r.setProperty('--surface3',d?'#1a1d23':'#eaecf0');
+  r.setProperty('--border',d?'#383d4a':'#d4d7de');
+  r.setProperty('--border2',d?'#2e3340':'#e8eaed');
+  r.setProperty('--text',d?'#e8eaf0':'#1c1f26');
+  r.setProperty('--text2',d?'#9099ae':'#52586a');
+  r.setProperty('--text3',d?'#5a6070':'#9098aa');
+}
+
+// ============================
+// EXPORT / IMPORT
+// ============================
+function getExportState(){
+  // Exclude imgData (large), store only id/name/defW/defD
+  return {
+    version:2,
+    room:state.room,wallTile:state.wallTile,floorTile:state.floorTile,
+    floorLayout:state.floorLayout,wallLayout:state.wallLayout,
+    offset:state.offset,openings:state.openings,threshold:state.threshold,
+    columns:state.columns,
+    fixtures:state.fixtures.map(f=>({id:f.id,name:f.name,defW:f.defW,defD:f.defD,imgData:f.imgData})),
+    placedFixtures:state.placedFixtures,
+    caseInfo:state.caseInfo,
+  };
+}
+
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(getExportState(),null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`tile-plan-${Date.now()}.json`;a.click();
+  notify('💾 JSON 已匯出');
+}
+
+function importJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      loadState(data);
+      notify('✅ 載入成功！');
+    }catch(err){notify('❌ 載入失敗：格式錯誤')}
+  };
+  reader.readAsText(file);e.target.value='';
+}
+
+function syncUI(){
+  const s=state;
+  ['roomW','roomD','wallH','tileH','trimW'].forEach(id=>{const k=id.replace('room','');$(id).value=s.room[k.toLowerCase()]??s.room[k]??0});
+  $('roomW').value=s.room.W;$('roomD').value=s.room.D;$('wallH').value=s.room.wallH;
+  $('tileH').value=s.room.tileH;$('trimW').value=s.room.trimW;$('structThick').value=s.room.structThick??15;
+  $('wallTileModel').value=s.wallTile.model||'';$('wallTileW').value=s.wallTile.w;$('wallTileH').value=s.wallTile.h;
+  $('wallGrout').value=s.wallTile.grout;$('wallGroutModel').value=s.wallTile.groutModel||'';
+  $('wallTileThick').value=s.wallTile.thickness??10;$('wallAdhesive').value=s.wallTile.adhesive??6;
+  $('floorTileModel').value=s.floorTile.model||'';$('floorTileW').value=s.floorTile.w;$('floorTileH').value=s.floorTile.h;
+  $('floorGrout').value=s.floorTile.grout;$('floorGroutModel').value=s.floorTile.groutModel||'';
+  $('floorLayout').value=s.floorLayout;$('wallLayoutSelect').value=s.wallLayout;
+  ['offsetX','offsetY','offW1','offW2','offW3','offW4','offAll'].forEach(id=>{
+    const keyMap={offsetX:'x',offsetY:'y',offW1:'w1',offW2:'w2',offW3:'w3',offW4:'w4',offAll:'all'};
+    $(id).value=$(id+'Val').value=s.offset[keyMap[id]]||0;
+  });
+  $('caseName').value=s.caseInfo.name||'';$('caseAddr').value=s.caseInfo.addr||'';$('caseSub').value=s.caseInfo.sub||'';
+  $('columnsEnabled').checked=s.columns.enabled;
+  $('columnsBody').style.display=s.columns.enabled?'':'none';
+  [['col_tl_w','tl','w'],['col_tl_d','tl','d'],['col_tr_w','tr','w'],['col_tr_d','tr','d'],
+   ['col_bl_w','bl','w'],['col_bl_d','bl','d'],['col_br_w','br','w'],['col_br_d','br','d']].forEach(([id,corner,prop])=>{
+    $(id).value=s.columns[corner][prop]||0;
+  });
+  ['tl','tr','bl','br'].forEach(c=>{
+    $(`col_${c}_type`).value=s.columns[c].type||'col';
+  });
+}
+
+function exportPNG(){
+  render();
+  const fc=floorCanvas,wc=wallCanvas;
+  const tmp=document.createElement('canvas');
+  const pad=16;
+  tmp.width=Math.max(fc.width,wc.width)+pad*2;
+  tmp.height=fc.height+wc.height+pad*3+24;
+  const ctx=tmp.getContext('2d');
+  ctx.fillStyle='#f0f2f5';ctx.fillRect(0,0,tmp.width,tmp.height);
+  if(state.caseInfo.name){ctx.fillStyle='#1c1f26';ctx.font='bold 14px sans-serif';ctx.fillText(state.caseInfo.name,pad,pad+10);}
+  if(state.caseInfo.addr){ctx.fillStyle='#666';ctx.font='11px sans-serif';ctx.fillText(state.caseInfo.addr,pad,pad+24);}
+  ctx.drawImage(fc,pad,pad+30);
+  ctx.drawImage(wc,pad,pad+30+fc.height+pad);
+  const a=document.createElement('a');a.href=tmp.toDataURL('image/png',1);
+  a.download=`tile-plan-${Date.now()}.png`;a.click();
+  notify('🖼️ PNG 已匯出');
+}
+
+function exportPDF(){
+  render();
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>${state.caseInfo.name||'磁磚計畫'}</title>
+  <style>body{margin:0;padding:20px;font-family:sans-serif;background:#fff}img{max-width:100%;display:block;margin-bottom:12px}h2{margin:0 0 3px;font-size:16px}p{color:#666;margin:0 0 10px;font-size:12px}</style></head><body>
+  <h2>${state.caseInfo.name||'浴室磁磚計畫'}</h2>
+  <p>${state.caseInfo.addr||''} ${state.caseInfo.sub||''}</p>
+  <img src="${floorCanvas.toDataURL()}">
+  <img src="${wallCanvas.toDataURL()}">
+  <script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close(); notify('📄 開啟列印對話框…');
+}
+
+function exportSVG(){
+  render();
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.max(floorCanvas.width,wallCanvas.width)}" height="${floorCanvas.height+wallCanvas.height+30}">
+  <text x="10" y="16" font-size="14" font-weight="bold" fill="#1c1f26">${state.caseInfo.name||'浴室磁磚計畫'}</text>
+  <text x="10" y="30" font-size="11" fill="#666">${state.caseInfo.addr||''}</text>
+  <image href="${floorCanvas.toDataURL()}" x="0" y="35" width="${floorCanvas.width}" height="${floorCanvas.height}"/>
+  <image href="${wallCanvas.toDataURL()}" x="0" y="${35+floorCanvas.height+10}" width="${wallCanvas.width}" height="${wallCanvas.height}"/>
+</svg>`;
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
+  a.download=`tile-plan-${Date.now()}.svg`;a.click();notify('📐 SVG 已匯出');
+}
+
+// ============================
+// INIT
+// ============================
+bindAll();
+renderFixtureList();
+initDraggableModals();
+patchModalApplyForEdit();
+render();
+let _rt;
+window.addEventListener('resize',()=>{clearTimeout(_rt);_rt=setTimeout(render,200)});
+</script>
+</body>
+</html>
