@@ -34,7 +34,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13
 .btn-icon{padding:4px 7px;font-size:13px}
 
 /* LAYOUT */
-.main{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px;max-width:1700px;margin:0 auto}
+.main{display:grid;grid-template-columns:minmax(340px,420px) 1fr;gap:12px;padding:12px;max-width:1900px;margin:0 auto}
 @media(max-width:1100px){.main{grid-template-columns:1fr}}
 .left-col{display:flex;flex-direction:column;gap:12px}
 .right-col{display:flex;flex-direction:column;gap:12px}
@@ -43,22 +43,22 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
 .panel-header{background:var(--surface2);border-bottom:1px solid var(--border2);padding:7px 12px;font-size:12px;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:6px;user-select:none}
 .panel-header .hdr-icon{font-size:14px}
-.panel-body{padding:11px 12px}
+.panel-body{padding:8px 10px}
 
 /* FORM */
-.form-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:7px}
+.form-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:5px}
 .form-row:last-child{margin-bottom:0}
 .form-label{font-size:12px;color:var(--text2);font-weight:500;white-space:nowrap}
-.form-input{padding:4px 7px;border:1px solid var(--border);border-radius:5px;font-size:13px;font-family:var(--font);background:var(--surface);color:var(--text);transition:border-color .15s}
+.form-input{padding:3px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:var(--font);background:var(--surface);color:var(--text);transition:border-color .15s}
 .form-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-light)}
-.form-input-num{width:64px;text-align:right}
-.form-input-wide{width:120px}
+.form-input-num{width:56px;text-align:right}
+.form-input-wide{width:88px}
 .form-unit{font-size:11px;color:var(--text3)}
 .form-sep{color:var(--border);font-size:14px}
 select.form-input{cursor:pointer}
 
 /* STATS */
-.stats-bar{display:flex;gap:14px;padding:7px 12px;background:var(--surface2);border-bottom:1px solid var(--border2);flex-wrap:wrap;align-items:center}
+.stats-bar{display:flex;gap:10px;padding:5px 10px;background:var(--surface2);border-bottom:1px solid var(--border2);flex-wrap:wrap;align-items:center}
 .stat{display:flex;align-items:baseline;gap:3px;font-size:12px}
 .stat-label{color:var(--text3)}
 .stat-value{font-weight:700;color:var(--text);font-size:13px}
@@ -71,7 +71,7 @@ select.form-input{cursor:pointer}
 canvas{display:block;cursor:crosshair}
 
 /* TOOLBAR */
-.toolbar{display:flex;gap:6px;padding:7px 12px;border-bottom:1px solid var(--border2);align-items:center;flex-wrap:wrap;background:var(--surface)}
+.toolbar{display:flex;gap:5px;padding:5px 10px;border-bottom:1px solid var(--border2);align-items:center;flex-wrap:wrap;background:var(--surface)}
 
 /* TABS */
 .tabs{display:flex;gap:2px;padding:7px 12px 0;background:var(--surface2);border-bottom:1px solid var(--border2)}
@@ -81,7 +81,7 @@ canvas{display:block;cursor:crosshair}
 
 /* SLIDER */
 .slider-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
-.slider-label{font-size:12px;color:var(--text2);min-width:65px}
+.slider-label{font-size:11px;color:var(--text2);min-width:55px}
 input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
 
 /* LEGEND */
@@ -98,6 +98,17 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
 
 /* NOTIF */
 .notif{position:fixed;bottom:20px;right:20px;background:var(--text);color:#fff;padding:10px 16px;border-radius:7px;font-size:13px;z-index:999;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none}
+/* Draggable modals */
+.draggable-modal{position:relative}
+.modal-overlay.drag-active{background:rgba(0,0,0,.35)}
+.modal-overlay .modal.floating{position:fixed;top:auto;left:auto;margin:0;box-shadow:0 8px 32px rgba(0,0,0,.25)}
+/* Opening list */
+.opening-list-item{display:flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid var(--border2);border-radius:5px;background:var(--surface2);font-size:12px;margin-bottom:3px}
+.opening-list-item:hover{border-color:var(--accent)}
+.opening-badge{padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;background:var(--accent-light);color:var(--accent)}
+.opening-badge.win{background:#e0f0ff;color:#2a608a}
+.opening-badge.thresh{background:#fff3e0;color:#a07040}
+.opening-badge.drain{background:#eee;color:#555}
 .notif.show{opacity:1;transform:translateY(0)}
 
 /* GRID 2COL */
@@ -155,7 +166,7 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
     <div class="panel-header"><span class="hdr-icon">📐</span>房間設定</div>
     <div class="panel-body">
       <div class="form-row">
-        <span class="form-label">房間 長</span>
+        <span class="form-label">打底尺寸 長</span>
         <input class="form-input form-input-num" id="roomW" type="number" value="280" min="50" max="2000">
         <span class="form-label">寬</span>
         <input class="form-input form-input-num" id="roomD" type="number" value="180" min="50" max="2000">
@@ -165,6 +176,9 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
         <input class="form-input form-input-num" id="tileH" type="number" value="240" min="0" max="500">
         <span class="form-label">收邊條</span>
         <input class="form-input form-input-num" id="trimW" type="number" value="240">
+        <span class="form-unit">cm</span>
+        <span class="form-label" style="margin-left:6px">結構+打底</span>
+        <input class="form-input form-input-num" id="structThick" type="number" value="15" min="5" max="50" title="結構體+打底厚度（cm）">
         <span class="form-unit">cm</span>
       </div>
       <div class="form-row">
@@ -189,10 +203,10 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
       <!-- NET DIMENSION DISPLAY -->
       <div class="form-row" id="netDimRow" style="background:var(--accent-bg);border:1px solid var(--border2);border-radius:6px;padding:5px 10px;gap:12px">
         <span style="font-size:11px;font-weight:700;color:var(--accent)">實際鋪磚淨尺寸</span>
-        <span style="font-size:11px;color:var(--text2)">長方向（W2+W4各佔）：</span>
+        <span style="font-size:11px;color:var(--text2)">鋪磚淨長（扣磚粘）：</span>
         <span style="font-size:13px;font-weight:700;color:var(--text)" id="netW">—</span>
         <span style="font-size:11px;color:var(--text3)">cm</span>
-        <span style="font-size:11px;color:var(--text2)">寬方向（W1+W3各佔）：</span>
+        <span style="font-size:11px;color:var(--text2)">鋪磚淨寬（扣磚粘）：</span>
         <span style="font-size:13px;font-weight:700;color:var(--text)" id="netD">—</span>
         <span style="font-size:11px;color:var(--text3)">cm</span>
         <span style="font-size:11px;font-weight:600;color:var(--warn)" id="netBuildupNote"></span>
@@ -232,7 +246,7 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
       </label>
     </div>
     <div class="panel-body" id="columnsBody" style="display:none">
-      <p style="font-size:11px;color:var(--text3);margin-bottom:8px">設定各角落凸出的柱寬 × 柱深（cm）。0 = 無柱。柱體為不貼磚區域。</p>
+      <p style="font-size:11px;color:var(--text3);margin-bottom:8px">設定各角落凸出的寬 × 深（cm）及類型。0 = 無凸出。</p>
       <div class="columns-grid">
         <div class="corner-box">
           <label>↖ 左上角 (W3-W2)</label>
@@ -241,6 +255,11 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
             <span class="form-sep">×</span>
             <input class="form-input form-input-num" id="col_tl_d" type="number" value="0" min="0" max="200" placeholder="深">
             <span class="form-unit">cm</span>
+            <select class="form-input" id="col_tl_type" style="font-size:11px;padding:2px 4px;width:auto">
+              <option value="col">柱</option>
+              <option value="pipe">管道間</option>
+              <option value="other">其他房間</option>
+            </select>
           </div>
         </div>
         <div class="corner-box">
@@ -250,6 +269,11 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
             <span class="form-sep">×</span>
             <input class="form-input form-input-num" id="col_tr_d" type="number" value="0" min="0" max="200" placeholder="深">
             <span class="form-unit">cm</span>
+            <select class="form-input" id="col_tr_type" style="font-size:11px;padding:2px 4px;width:auto">
+              <option value="col">柱</option>
+              <option value="pipe">管道間</option>
+              <option value="other">其他房間</option>
+            </select>
           </div>
         </div>
         <div class="corner-box">
@@ -259,6 +283,11 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
             <span class="form-sep">×</span>
             <input class="form-input form-input-num" id="col_bl_d" type="number" value="0" min="0" max="200" placeholder="深">
             <span class="form-unit">cm</span>
+            <select class="form-input" id="col_bl_type" style="font-size:11px;padding:2px 4px;width:auto">
+              <option value="col">柱</option>
+              <option value="pipe">管道間</option>
+              <option value="other">其他房間</option>
+            </select>
           </div>
         </div>
         <div class="corner-box">
@@ -268,6 +297,11 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
             <span class="form-sep">×</span>
             <input class="form-input form-input-num" id="col_br_d" type="number" value="0" min="0" max="200" placeholder="深">
             <span class="form-unit">cm</span>
+            <select class="form-input" id="col_br_type" style="font-size:11px;padding:2px 4px;width:auto">
+              <option value="col">柱</option>
+              <option value="pipe">管道間</option>
+              <option value="other">其他房間</option>
+            </select>
           </div>
         </div>
       </div>
@@ -339,6 +373,11 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
       <button class="btn btn-sm btn-danger" id="deleteSelectedBtn" style="display:none;margin-left:auto">🗑 刪除選取</button>
       <button class="btn btn-sm" id="cancelSelectBtn" style="display:none">取消</button>
     </div>
+    <!-- OPENINGS LIST -->
+    <div id="openingsListPanel" style="padding:6px 12px 2px;border-bottom:1px solid var(--border2);display:none">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:4px">已加入的門窗門檻</div>
+      <div id="openingsListContainer"></div>
+    </div>
 
     <!-- FLOOR CANVAS -->
     <div class="canvas-wrap" id="floorCanvasWrap">
@@ -400,7 +439,7 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
       <button class="btn btn-sm btn-active" id="annotNum">純數字</button>
       <button class="btn btn-sm" id="annotArch">建築風</button>
     </div>
-    <div style="overflow-x:auto;padding:10px 12px">
+    <div style="overflow-x:auto;overflow-y:hidden;padding:8px 10px;min-height:200px">
       <canvas id="wallExpandCanvas"></canvas>
     </div>
   </div>
@@ -433,11 +472,11 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
 
 <!-- THRESHOLD -->
 <div class="modal-overlay" id="threshModal">
-  <div class="modal">
-    <div class="modal-title">🪨 人造石門檻設定</div>
-    <div class="form-row"><span class="form-label" style="min-width:45px">離左</span><input class="form-input form-input-num" id="threshLeft" type="number" value="0"><span class="form-unit">cm</span></div>
-    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:45px">離右</span><input class="form-input form-input-num" id="threshRight" type="number" value="0"><span class="form-unit">cm</span></div>
-    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:45px">寬度</span><input class="form-input form-input-num" id="threshWid" type="number" value="6"><span class="form-unit">cm</span></div>
+  <div class="modal draggable-modal" id="threshModalBox">
+    <div class="modal-title drag-handle" style="cursor:move;user-select:none">🪨 人造石門檻設定 <span style="font-size:11px;color:var(--text3);font-weight:400">（拖曳標題可移動）</span></div>
+    <div class="form-row"><span class="form-label" style="min-width:45px">編號/名稱</span><input class="form-input" id="threshLabel" type="text" placeholder="如：主臥門檻" style="width:130px"></div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:8px;padding:6px 0;border-bottom:1px solid var(--border2)">門檻自動對齊 W1 的門寬，如無門則橫跨全寬</div>
+    <div class="form-row"><span class="form-label" style="min-width:45px">門檻寬度</span><input class="form-input form-input-num" id="threshWid" type="number" value="6"><span class="form-unit">cm（門檻厚，通常小於牆厚）</span></div>
     <div class="modal-footer">
       <button class="btn" id="threshCancel">取消</button>
       <button class="btn btn-danger" id="threshRemove">移除門檻</button>
@@ -462,10 +501,12 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
 
 <!-- DOOR MODAL -->
 <div class="modal-overlay" id="doorModal">
-  <div class="modal">
-    <div class="modal-title" id="doorModalTitle">🚪 門設定</div>
-    <div class="form-row"><span class="form-label" style="min-width:60px">開口寬</span><input class="form-input form-input-num" id="doorWidth" type="number" value="90" min="30" max="300"><span class="form-unit">cm</span></div>
-    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">門片厚</span><input class="form-input form-input-num" id="doorLeafThick" type="number" value="4" min="1" max="10"><span class="form-unit">cm（繪於牆內貼齊粘劑面）</span></div>
+  <div class="modal draggable-modal" id="doorModalBox">
+    <div class="modal-title drag-handle" id="doorModalTitle" style="cursor:move;user-select:none">🚪 門設定 <span style="font-size:11px;color:var(--text3);font-weight:400">（拖曳標題可移動）</span></div>
+    <div class="form-row"><span class="form-label" style="min-width:60px">編號/名稱</span><input class="form-input" id="doorLabel" type="text" placeholder="如：主臥門" style="width:130px"></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">開口寬</span><input class="form-input form-input-num" id="doorWidth" type="number" value="90" min="30" max="300"><span class="form-unit">cm</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">門高</span><input class="form-input form-input-num" id="doorHeight" type="number" value="210" min="100" max="300"><span class="form-unit">cm</span></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">門片厚</span><input class="form-input form-input-num" id="doorLeafThick" type="number" value="4" min="1" max="10"><span class="form-unit">cm</span></div>
     <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">所在牆</span>
       <select class="form-input" id="doorWall">
         <option value="1">W1（下）</option>
@@ -490,9 +531,10 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
 
 <!-- WINDOW MODAL -->
 <div class="modal-overlay" id="windowModal">
-  <div class="modal">
-    <div class="modal-title">🪟 窗設定</div>
-    <div class="form-row"><span class="form-label" style="min-width:60px">開口寬</span><input class="form-input form-input-num" id="winWidth" type="number" value="90" min="20" max="300"><span class="form-unit">cm</span></div>
+  <div class="modal draggable-modal" id="windowModalBox">
+    <div class="modal-title drag-handle" style="cursor:move;user-select:none">🪟 窗設定 <span style="font-size:11px;color:var(--text3);font-weight:400">（拖曳標題可移動）</span></div>
+    <div class="form-row"><span class="form-label" style="min-width:60px">編號/名稱</span><input class="form-input" id="winLabel" type="text" placeholder="如：浴室窗" style="width:130px"></div>
+    <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">開口寬</span><input class="form-input form-input-num" id="winWidth" type="number" value="90" min="20" max="300"><span class="form-unit">cm</span></div>
     <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">窗台高</span><input class="form-input form-input-num" id="winSill" type="number" value="80" min="0" max="250"><span class="form-unit">cm（地面起算）</span></div>
     <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">窗高</span><input class="form-input form-input-num" id="winHeight" type="number" value="120" min="10" max="250"><span class="form-unit">cm</span></div>
     <div class="form-row" style="margin-top:6px"><span class="form-label" style="min-width:60px">所在牆</span>
@@ -553,14 +595,14 @@ input[type=range]{flex:1;height:4px;accent-color:var(--accent);cursor:pointer}
 // STATE
 // ============================
 const state = {
-  room:{ W:280, D:180, wallH:270, tileH:240, trimW:240 },
+  room:{ W:280, D:180, wallH:270, tileH:240, trimW:240, structThick:15 },
   wallTile:{ model:'', w:200, h:200, grout:3, groutModel:'', thickness:10, adhesive:6 },
   floorTile:{ model:'', w:200, h:200, grout:3, groutModel:'' },
   floorLayout:'align', wallLayout:'align',
   offset:{ x:0, y:0, w1:2, w2:0, w3:0, w4:0, all:0 },
   openings:[], // {type,wall,pos,width,height,swing,leafThick,sill,drainX,drainY,size}
   threshold:null,
-  columns:{ enabled:false, tl:{w:0,d:0}, tr:{w:0,d:0}, bl:{w:0,d:0}, br:{w:0,d:0} },
+  columns:{ enabled:false, tl:{w:0,d:0,type:'col'}, tr:{w:0,d:0,type:'col'}, bl:{w:0,d:0,type:'col'}, br:{w:0,d:0,type:'col'} },
   fixtures:[],        // library: {id, name, imgData, defW, defD}
   placedFixtures:[],  // on canvas: {fixtureId, x, y, w, d, angle, id}
   caseInfo:{ name:'', addr:'', sub:'' },
@@ -605,25 +647,32 @@ function uid(){return Math.random().toString(36).slice(2)}
 function getNetDims(){
   // buildup per wall = tile thickness + adhesive (mm → cm)
   const buildup = (state.wallTile.thickness + state.wallTile.adhesive) / 10;
-  // W direction (room length): W2 wall (left) + W4 wall (right) each consume one buildup
+  // structural = user-defined structThick (cm), default 15
+  const structural = state.room.structThick || 15;
+  // total wall strip added OUTWARD (does NOT reduce net area)
+  const wallTotal = structural + buildup;
+  // Input W/D = 打底完成尺寸; subtract tile+adhesive on both sides to get net tiling area
   const netW = state.room.W - buildup * 2;
-  // D direction (room width): W1 wall (bottom) + W3 wall (top) each consume one buildup
   const netD = state.room.D - buildup * 2;
-  return { netW: Math.max(1, netW), netD: Math.max(1, netD), buildup };
+  // Outer structural box = input size + structural on both sides
+  const outerW = state.room.W + structural * 2;
+  const outerD = state.room.D + structural * 2;
+  return { netW: Math.max(1,netW), netD: Math.max(1,netD), buildup, structural, wallTotal, outerW, outerD };
 }
 
 function updateNetDimDisplay(){
-  const { netW, netD, buildup } = getNetDims();
+  const { netW, netD, buildup, structural, wallTotal, outerW, outerD } = getNetDims();
   $('netW').textContent = netW.toFixed(1);
   $('netD').textContent = netD.toFixed(1);
-  $('netBuildupNote').textContent = `（每面牆佔 ${buildup.toFixed(1)} cm）`;
+  $('netBuildupNote').textContent = `（打底尺寸扣磚粘${buildup.toFixed(1)}×2=淨${netW.toFixed(1)}×${netD.toFixed(1)} cm；外框加RC${structural.toFixed(0)} cm）`;
 }
 
 
 function getScale(){
   const wrap=$('floorCanvasWrap');
   const maxW=Math.max(300,(wrap.clientWidth||600)-4);
-  const sc0=(maxW-60)/state.room.W;
+  const {outerW}=getNetDims();
+  const sc0=(maxW-80)/outerW;
   return Math.max(0.4,Math.min(6, sc0)) * state.zoom;
 }
 
@@ -649,16 +698,9 @@ function getColumnRects(){
 }
 // Net-space column rects (offset by buildup); also expand by buildup on inner edges
 function getColumnRectsNet(buildup){
-  const cols=getColumns();
-  const {netW,netD}=getNetDims();
-  const b=buildup;
-  const rects=[];
-  // Each corner column: subtract buildup from origin, add buildup width on inner faces
-  if(cols.tl.w>0&&cols.tl.d>0) rects.push({x:0,y:0,w:cols.tl.w-b+b,h:cols.tl.d-b+b,corner:'tl'});
-  if(cols.tr.w>0&&cols.tr.d>0) rects.push({x:netW-(cols.tr.w),y:0,w:cols.tr.w,h:cols.tr.d-b,corner:'tr'});
-  if(cols.bl.w>0&&cols.bl.d>0) rects.push({x:0,y:netD-(cols.bl.d),w:cols.bl.w-b,h:cols.bl.d,corner:'bl'});
-  if(cols.br.w>0&&cols.br.d>0) rects.push({x:netW-(cols.br.w),y:netD-(cols.br.d),w:cols.br.w,h:cols.br.d,corner:'br'});
-  return rects;
+  // Same as getColumnRects but in net (tiling) coordinate space
+  // Since input W/D IS the net space, this is identical
+  return getColumnRects();
 }
 
 // Check if a tile rect (cm) overlaps any column
@@ -681,47 +723,48 @@ function tileOverlapsColumnNet(rx,ry,tw,th,buildup){
   }
   return false;
 }
+function tileFullyInsideColumnNet(rx,ry,tw,th,buildup){
+  for(const c of getColumnRectsNet(buildup)){
+    if(rx>=c.x && ry>=c.y && rx+tw<=c.x+c.w && ry+th<=c.y+c.h) return true;
+  }
+  return false;
+}
 
 // Draw hatched wall buildup strips on 4 sides
-function drawWallBuildup(sc,ox,oy,W,D,bsc){
+// Draw tile+adhesive layer strips (inner layer over structural)
+function drawTileAdhesiveLayer(sc,ox,oy,oW,oD,ssc,bsc){
+  // oW/oD = outer dimensions (structural included)
+  // strips between structural outer edge (ssc) and net area (ssc+bsc)
   if(bsc<1) return;
+  const owsc=oW*sc, odsc=oD*sc;
   fCtx.save();
-  // fill strips
-  fCtx.fillStyle='rgba(80,100,140,0.30)';
-  fCtx.fillRect(ox,oy,W*sc,bsc);           // top (W3)
-  fCtx.fillRect(ox,oy+D*sc-bsc,W*sc,bsc); // bottom (W1)
-  fCtx.fillRect(ox,oy,bsc,D*sc);           // left (W2)
-  fCtx.fillRect(ox+W*sc-bsc,oy,bsc,D*sc); // right (W4)
-  // hatching
-  fCtx.strokeStyle='rgba(60,80,130,0.25)'; fCtx.lineWidth=0.8;
-  const strips=[
-    [ox,oy,W*sc,bsc],
-    [ox,oy+D*sc-bsc,W*sc,bsc],
-    [ox,oy,bsc,D*sc],
-    [ox+W*sc-bsc,oy,bsc,D*sc],
-  ];
-  strips.forEach(([sx,sy,sw,sh])=>{
+  fCtx.fillStyle='rgba(80,100,160,0.32)';
+  fCtx.fillRect(ox+ssc, oy, owsc-ssc*2, bsc);              // top
+  fCtx.fillRect(ox+ssc, oy+odsc-bsc, owsc-ssc*2, bsc);     // bottom
+  fCtx.fillRect(ox, oy+ssc, bsc, odsc-ssc*2);              // left
+  fCtx.fillRect(ox+owsc-bsc, oy+ssc, bsc, odsc-ssc*2);     // right
+  fCtx.strokeStyle='rgba(40,60,160,0.22)'; fCtx.lineWidth=0.7;
+  [[ox+ssc,oy,owsc-ssc*2,bsc],[ox+ssc,oy+odsc-bsc,owsc-ssc*2,bsc],
+   [ox,oy+ssc,bsc,odsc-ssc*2],[ox+owsc-bsc,oy+ssc,bsc,odsc-ssc*2]].forEach(([sx,sy,sw,sh])=>{
     fCtx.save(); fCtx.beginPath(); fCtx.rect(sx,sy,sw,sh); fCtx.clip();
-    for(let i=-Math.max(sw,sh);i<Math.max(sw,sh)*2;i+=7){
-      fCtx.beginPath(); fCtx.moveTo(sx+i,sy); fCtx.lineTo(sx+i+sh,sy+sh); fCtx.stroke();
-    }
+    for(let i=-sh;i<sw+sh;i+=7){ fCtx.beginPath(); fCtx.moveTo(sx+i,sy); fCtx.lineTo(sx+i+sh,sy+sh); fCtx.stroke(); }
     fCtx.restore();
   });
-  // wall labels inside strips if wide enough
-  if(bsc>14){
-    fCtx.fillStyle='rgba(30,50,120,0.85)'; fCtx.font=`bold ${Math.min(14,Math.max(9,bsc*.55))}px sans-serif`; fCtx.textAlign='center'; fCtx.textBaseline='middle';
-    fCtx.fillText('磚+粘',ox+W*sc/2,oy+bsc/2);
-    fCtx.fillText('磚+粘',ox+W*sc/2,oy+D*sc-bsc/2);
-    fCtx.save(); fCtx.translate(ox+bsc/2,oy+D*sc/2); fCtx.rotate(-Math.PI/2); fCtx.fillText('磚+粘',0,0); fCtx.restore();
-    fCtx.save(); fCtx.translate(ox+W*sc-bsc/2,oy+D*sc/2); fCtx.rotate(Math.PI/2); fCtx.fillText('磚+粘',0,0); fCtx.restore();
+  if(ssc>14){
+    fCtx.fillStyle='rgba(30,35,50,0.60)';
+    fCtx.font=`bold ${Math.min(12,Math.max(8,ssc*.38))}px sans-serif`;
+    fCtx.textAlign='center'; fCtx.textBaseline='middle';
+    fCtx.fillText('RC', ox+owsc/2, oy+ssc/2);
+    fCtx.fillText('RC', ox+owsc/2, oy+odsc-ssc/2);
+    fCtx.save(); fCtx.translate(ox+ssc/2, oy+odsc/2); fCtx.rotate(-Math.PI/2); fCtx.fillText('RC',0,0); fCtx.restore();
+    fCtx.save(); fCtx.translate(ox+owsc-ssc/2, oy+odsc/2); fCtx.rotate(Math.PI/2); fCtx.fillText('RC',0,0); fCtx.restore();
   }
   fCtx.restore();
 }
 
 function drawFloor(){
   const sc=getScale();
-  const {W,D}=state.room;
-  const {netW,netD,buildup}=getNetDims();
+  const {netW,netD,buildup,structural,wallTotal,outerW,outerD}=getNetDims();
   const tw=state.floorTile.w/10;
   const th=state.floorTile.h/10;
   const grout=state.floorTile.grout/10;
@@ -730,18 +773,48 @@ function drawFloor(){
   const layout=state.floorLayout;
   const PAD=32;
 
-  floorCanvas.width=Math.round(W*sc+PAD*2+16);
-  floorCanvas.height=Math.round(D*sc+PAD*2+20);
+  // Canvas sized to outer (structural) box
+  const wtsc=wallTotal*sc;
+  const bsc=buildup*sc;
+  const ssc=structural*sc;
+  const floorW=netW*sc, floorH=netD*sc;
+
+  floorCanvas.width=Math.round(outerW*sc+PAD*2+40);
+  floorCanvas.height=Math.round(outerD*sc+PAD*2+24);
   fCtx.clearRect(0,0,floorCanvas.width,floorCanvas.height);
   fCtx.fillStyle='#c8cdd8'; fCtx.fillRect(0,0,floorCanvas.width,floorCanvas.height);
 
+  // ox/oy = top-left of OUTER (structural) box
   const ox=PAD, oy=PAD;
-  const bsc=buildup*sc;
-  const floorX=ox+bsc, floorY=oy+bsc;
-  const floorW=netW*sc, floorH=netD*sc;
+  // floorX/floorY = top-left of NET tiling area
+  const floorX=ox+wtsc, floorY=oy+wtsc;
 
-  // room bg
-  fCtx.fillStyle='#b8c0ce'; fCtx.fillRect(ox,oy,W*sc,D*sc);
+  // ── Structural strips (outside net area) ──
+  fCtx.fillStyle='#9aa0ae';
+  // top strip
+  fCtx.fillRect(ox, oy, outerW*sc, ssc);
+  // bottom strip
+  fCtx.fillRect(ox, oy+outerD*sc-ssc, outerW*sc, ssc);
+  // left strip (between top/bottom)
+  fCtx.fillRect(ox, oy+ssc, ssc, outerD*sc-ssc*2);
+  // right strip
+  fCtx.fillRect(ox+outerW*sc-ssc, oy+ssc, ssc, outerD*sc-ssc*2);
+  // hatching
+  fCtx.save();
+  fCtx.strokeStyle='rgba(0,0,0,.13)'; fCtx.lineWidth=0.8;
+  [[ox,oy,outerW*sc,ssc],[ox,oy+outerD*sc-ssc,outerW*sc,ssc],
+   [ox,oy+ssc,ssc,outerD*sc-ssc*2],[ox+outerW*sc-ssc,oy+ssc,ssc,outerD*sc-ssc*2]].forEach(([sx,sy,sw,sh])=>{
+    fCtx.save(); fCtx.beginPath(); fCtx.rect(sx,sy,sw,sh); fCtx.clip();
+    for(let i=-sh;i<sw+sh;i+=9){ fCtx.beginPath(); fCtx.moveTo(sx+i,sy); fCtx.lineTo(sx+i+sh,sy+sh); fCtx.stroke(); }
+    fCtx.restore();
+  });
+  fCtx.restore();
+
+  // ── Tile adhesive layer strips (between structural and net area) ──
+  drawTileAdhesiveLayer(sc,ox,oy,outerW,outerD,ssc,bsc); // tile+adhesive strips
+
+  // ── Net tiling area background ──
+  fCtx.fillStyle='#dde2ea'; fCtx.fillRect(floorX,floorY,floorW,floorH);
 
   // tiles inside net area
   fCtx.save();
@@ -763,71 +836,112 @@ function drawFloor(){
       else if(layout==='v_third') ry+=(c%3)*stepY/3;
       const isOut=rx+tw<=0||rx>=netW||ry+th<=0||ry>=netD;
       if(isOut) continue;
-      if(tileOverlapsColumnNet(rx,ry,tw,th,buildup)) continue;
-      const isFull=rx>=0&&ry>=0&&rx+tw<=netW&&ry+th<=netD;
+      // Skip tiles fully inside column, but show cut tiles at column edge
+      if(tileFullyInsideColumnNet(rx,ry,tw,th,buildup)) continue;
+      const overlapCol=tileOverlapsColumnNet(rx,ry,tw,th,buildup);
+      const isFull=rx>=0&&ry>=0&&rx+tw<=netW&&ry+th<=netD&&!overlapCol;
       if(isFull){full++;fCtx.fillStyle='#6fa8dc';}
       else{cut++;fCtx.fillStyle='#e06c4a';}
       const px=floorX+rx*sc, py=floorY+ry*sc, pw=tw*sc, ph=th*sc;
-      fCtx.fillRect(px+.5,py+.5,pw-1,ph-1);
-      fCtx.strokeStyle='rgba(255,255,255,.45)'; fCtx.lineWidth=.5;
-      fCtx.strokeRect(px+.5,py+.5,pw-1,ph-1);
+      if(overlapCol){
+        // Clip tile to exclude column area
+        fCtx.save();
+        fCtx.beginPath(); fCtx.rect(floorX,floorY,floorW,floorH);
+        // subtract column rects from clip
+        const colsNet=getColumnRectsNet(buildup);
+        colsNet.forEach(c=>{
+          // draw clip path around column (exclude column from tile draw)
+          // Use even-odd fill to punch hole
+        });
+        fCtx.rect(px,py,pw,ph);
+        // Simple approach: just draw tile then overdraw column body
+        fCtx.fillRect(px+.5,py+.5,pw-1,ph-1);
+        fCtx.strokeStyle='rgba(255,255,255,.45)'; fCtx.lineWidth=.5;
+        fCtx.strokeRect(px+.5,py+.5,pw-1,ph-1);
+        fCtx.restore();
+        // Redraw column area with correct style over tile
+        colsNet.forEach(c=>{
+          const cpx2=floorX+c.x*sc, cpy2=floorY+c.y*sc, cpw2=c.w*sc, cph2=c.h*sc;
+          const ct2=(state.columns[c.corner]||{}).type||'col';
+          fCtx.save(); fCtx.beginPath(); fCtx.rect(cpx2,cpy2,cpw2,cph2); fCtx.clip();
+          if(ct2==='pipe'){
+            fCtx.fillStyle='#c8bfa0'; fCtx.fillRect(cpx2,cpy2,cpw2,cph2);
+          } else {
+            fCtx.fillStyle='#9aa0ae'; fCtx.fillRect(cpx2,cpy2,cpw2,cph2);
+            fCtx.strokeStyle='rgba(0,0,0,.13)'; fCtx.lineWidth=0.8;
+            for(let i=-cph2;i<cpw2+cph2;i+=9){fCtx.beginPath();fCtx.moveTo(cpx2+i,cpy2);fCtx.lineTo(cpx2+i+cph2,cpy2+cph2);fCtx.stroke();}
+          }
+          fCtx.restore();
+        });
+      } else {
+        fCtx.fillRect(px+.5,py+.5,pw-1,ph-1);
+        fCtx.strokeStyle='rgba(255,255,255,.45)'; fCtx.lineWidth=.5;
+        fCtx.strokeRect(px+.5,py+.5,pw-1,ph-1);
+      }
     }
   }
   fCtx.restore();
 
-  // wall buildup strips with hatching
-  drawWallBuildup(sc,ox,oy,W,D,bsc);
+  // (tile adhesive layer drawn above tiles)
 
-  // room outer border
-  fCtx.strokeStyle='#1a3a88'; fCtx.lineWidth=2.5;
-  fCtx.strokeRect(ox+1,oy+1,W*sc-2,D*sc-2);
-  // net area dashed border
-  fCtx.strokeStyle='rgba(26,106,245,.5)'; fCtx.lineWidth=1; fCtx.setLineDash([4,3]);
+  // outer structural border
+  fCtx.strokeStyle='#334'; fCtx.lineWidth=2.5;
+  fCtx.strokeRect(ox+1,oy+1,outerW*sc-2,outerD*sc-2);
+  // net area solid blue border
+  fCtx.strokeStyle='rgba(26,106,245,.6)'; fCtx.lineWidth=1.5; fCtx.setLineDash([4,3]);
   fCtx.strokeRect(floorX,floorY,floorW,floorH); fCtx.setLineDash([]);
 
-  // columns (drawn in room coords; includes buildup on all sides)
+  // columns (drawn from floorX/floorY)
   for(const col of getColumnRects()){
-    const cpx=ox+col.x*sc, cpy=oy+col.y*sc, cpw=col.w*sc, cph=col.h*sc;
-    // Main column body (structural)
+    const cpx=floorX+col.x*sc, cpy=floorY+col.y*sc, cpw=col.w*sc, cph=col.h*sc;
+    const colType=(state.columns[col.corner]||{}).type||'col';
+    const isPipe=colType==='pipe';
+
     fCtx.save(); fCtx.beginPath(); fCtx.rect(cpx,cpy,cpw,cph); fCtx.clip();
-    fCtx.fillStyle='#8a95a8'; fCtx.fillRect(cpx,cpy,cpw,cph);
-    fCtx.strokeStyle='rgba(0,0,0,.18)'; fCtx.lineWidth=1;
-    for(let i=-cpw;i<cpw+cph;i+=7){fCtx.beginPath();fCtx.moveTo(cpx+i,cpy);fCtx.lineTo(cpx+i+cph,cpy+cph);fCtx.stroke();}
+
+    if(isPipe){
+      // 管道間: light warm fill + horizontal lines
+      fCtx.fillStyle='#c8bfa0'; fCtx.fillRect(cpx,cpy,cpw,cph);
+      fCtx.strokeStyle='rgba(80,60,20,.25)'; fCtx.lineWidth=0.8;
+      for(let y=cpy;y<cpy+cph;y+=5){fCtx.beginPath();fCtx.moveTo(cpx,y);fCtx.lineTo(cpx+cpw,y);fCtx.stroke();}
+    } else {
+      // 柱 / 其他房間: same RC grey with diagonal hatching (identical to outer wall)
+      fCtx.fillStyle='#9aa0ae'; fCtx.fillRect(cpx,cpy,cpw,cph);
+      fCtx.strokeStyle='rgba(0,0,0,.13)'; fCtx.lineWidth=0.8;
+      for(let i=-cph;i<cpw+cph;i+=9){fCtx.beginPath();fCtx.moveTo(cpx+i,cpy);fCtx.lineTo(cpx+i+cph,cpy+cph);fCtx.stroke();}
+    }
     fCtx.restore();
-    // Buildup strips on inner (exposed) faces of column
-    const innerFaces=[];
-    if(col.corner==='tl'){innerFaces.push({x:cpx+cpw,y:cpy,w:bsc,h:cph},{x:cpx,y:cpy+cph,w:cpw+bsc,h:bsc});}
-    else if(col.corner==='tr'){innerFaces.push({x:cpx-bsc,y:cpy,w:bsc,h:cph},{x:cpx-bsc,y:cpy+cph,w:cpw+bsc,h:bsc});}
-    else if(col.corner==='bl'){innerFaces.push({x:cpx+cpw,y:cpy,w:bsc,h:cph},{x:cpx,y:cpy-bsc,w:cpw+bsc,h:bsc});}
-    else if(col.corner==='br'){innerFaces.push({x:cpx-bsc,y:cpy,w:bsc,h:cph},{x:cpx-bsc,y:cpy-bsc,w:cpw+bsc,h:bsc});}
-    innerFaces.forEach(f=>{
-      fCtx.save(); fCtx.beginPath(); fCtx.rect(f.x,f.y,f.w,f.h); fCtx.clip();
-      fCtx.fillStyle='rgba(80,100,140,0.30)'; fCtx.fillRect(f.x,f.y,f.w,f.h);
-      fCtx.strokeStyle='rgba(60,80,130,0.2)'; fCtx.lineWidth=0.8;
-      for(let i=-f.w;i<f.w+f.h;i+=7){fCtx.beginPath();fCtx.moveTo(f.x+i,f.y);fCtx.lineTo(f.x+i+f.h,f.y+f.h);fCtx.stroke();}
-      fCtx.restore();
-    });
-    fCtx.strokeStyle='#334'; fCtx.lineWidth=2.5; fCtx.strokeRect(cpx,cpy,cpw,cph);
-    fCtx.fillStyle='rgba(0,0,0,.85)'; fCtx.font=`bold ${Math.min(18,Math.max(12,Math.min(cpw,cph)*.5))}px sans-serif`;
-    fCtx.textAlign='center'; fCtx.textBaseline='middle'; fCtx.fillText('柱',cpx+cpw/2,cpy+cph/2);
+
+    // Border
+    fCtx.strokeStyle='#334'; fCtx.lineWidth=2;
+    fCtx.strokeRect(cpx+0.5,cpy+0.5,cpw-1,cph-1);
+
+    // Label
+    const lbl=isPipe?'管':colType==='other'?'他':'柱';
+    fCtx.fillStyle='rgba(0,0,0,.8)';
+    fCtx.font=`bold ${Math.min(18,Math.max(11,Math.min(cpw,cph)*.45))}px sans-serif`;
+    fCtx.textAlign='center'; fCtx.textBaseline='middle';
+    fCtx.fillText(lbl, cpx+cpw/2, cpy+cph/2);
   }
 
   drawOpeningsOnFloor(sc,ox,oy,floorX,floorY,buildup);
   if(state.threshold) drawThresholdOnFloor(sc,floorX,floorY,netW,netD);
   drawPlacedFixtures(sc,floorX,floorY);
-  drawFloorDims(sc,ox,oy,W,D,PAD,netW,netD,buildup);
+  drawFloorDims(sc,ox,oy,netW,netD,PAD,netW,netD,buildup);
 
   const total=Math.ceil((full+cut)*1.1);
   $('fsFull').textContent=full; $('fsCut').textContent=cut; $('fsTotal').textContent=total;
   $('fsArea').textContent=((netW/100)*(netD/100)).toFixed(2);
-  $('fsTrim').textContent=Math.ceil((W+D)*2/state.room.trimW);
+  $('fsTrim').textContent=Math.ceil((netW+netD)*2/state.room.trimW);
   updateNetDimDisplay();
 }
 
 function drawOpeningsOnFloor(sc,ox,oy,floorX,floorY,buildup){
-  const {netW,netD}=getNetDims();
-  const bsc=buildup*sc; // wall buildup in px
-  const FONT_SCALE=2.4; // font size multiplier per spec
+  const {netW,netD,structural,wallTotal}=getNetDims();
+  const wtsc=wallTotal*sc; // full wall strip
+  const bsc=buildup*sc;   // tile+adhesive layer
+  const ssc=structural*sc; // structural
+  const FONT_SCALE=2.4;
 
   state.openings.forEach((op,i)=>{
     const isSel=selectedItem&&selectedItem.type==='opening'&&selectedItem.idx===i;
@@ -850,34 +964,28 @@ function drawOpeningsOnFloor(sc,ox,oy,floorX,floorY,buildup){
       return;
     }
 
-    // Openings sit IN the wall buildup strip, not protruding into room
-    // Wall 1 = bottom, Wall 3 = top (horizontal walls)
-    // Wall 2 = left, Wall 4 = right (vertical walls)
+    // Opening cuts through FULL wall strip (structural + tile+adhesive)
     let px,py,pw,ph;
     const opW=op.width*sc;
     if(op.wall===1){
-      // bottom wall: opening cuts through bottom buildup strip
       px = floorX + op.pos*sc;
-      py = floorY + netD*sc; // at net floor bottom = top of W1 strip
+      py = floorY + netD*sc;   // top of W1 full strip
       pw = opW;
-      ph = bsc; // wall thickness
+      ph = wtsc;               // full wall thickness
     } else if(op.wall===3){
-      // top wall
       px = floorX + op.pos*sc;
-      py = oy; // top of room
+      py = oy;                 // top of room (W3 strip starts here)
       pw = opW;
-      ph = bsc;
+      ph = wtsc;
     } else if(op.wall===2){
-      // left wall
       px = ox;
       py = floorY + op.pos*sc;
-      pw = bsc;
+      pw = wtsc;
       ph = opW;
-    } else { // wall 4
-      // right wall
+    } else {
       px = floorX + netW*sc;
       py = floorY + op.pos*sc;
-      pw = bsc;
+      pw = wtsc;
       ph = opW;
     }
 
@@ -905,28 +1013,29 @@ function drawOpeningsOnFloor(sc,ox,oy,floorX,floorY,buildup){
       fCtx.strokeStyle=isSel?'#e03030':'rgba(30,60,160,.5)';
       fCtx.lineWidth=isSel?2:1; fCtx.strokeRect(px,py,pw,ph);
 
-      // Door leaf: inside net area, flush with adhesive face of wall
+      // Door leaf: sits inside structural zone
+      // W1: leaf at innermost face of structural (py+0 = start of full strip, move inward by bsc to get to structural face)
       const lt=(op.leafThick||4)*sc;
       let lpx,lpy,lpw,lph;
       if(op.wall===1){
-        lpx=px; lpy=floorY+netD*sc-lt; lpw=pw; lph=lt;
+        lpx=px; lpy=py+bsc; lpw=pw; lph=lt; // bsc from net edge = adhesive face
       } else if(op.wall===3){
-        lpx=px; lpy=floorY; lpw=pw; lph=lt;
+        lpx=px; lpy=py+wtsc-bsc-lt; lpw=pw; lph=lt;
       } else if(op.wall===2){
-        lpx=floorX; lpy=py; lpw=lt; lph=ph;
+        lpx=px+bsc; lpy=py; lpw=lt; lph=ph;
       } else {
-        lpx=floorX+netW*sc-lt; lpy=py; lpw=lt; lph=ph;
+        lpx=px+wtsc-bsc-lt; lpy=py; lpw=lt; lph=ph;
       }
-      fCtx.fillStyle='rgba(160,130,90,.85)';
+      fCtx.fillStyle='rgba(140,210,160,.85)';
       fCtx.fillRect(lpx,lpy,lpw,lph);
-      fCtx.strokeStyle='#7a5a20'; fCtx.lineWidth=1.5;
+      fCtx.strokeStyle='#3a8a50'; fCtx.lineWidth=1.5;
       fCtx.strokeRect(lpx,lpy,lpw,lph);
 
       // Door swing arc from hinge corner
       const swing=op.swing||'cw';
       const arcR=(op.wall===1||op.wall===3)?opW:opW;
       fCtx.beginPath();
-      fCtx.strokeStyle='rgba(100,140,200,.55)'; fCtx.lineWidth=1.2; fCtx.setLineDash([4,3]);
+      fCtx.strokeStyle='rgba(255,255,255,.90)'; fCtx.lineWidth=2.5; fCtx.setLineDash([6,3]);
       if(op.wall===1){
         const hx=swing==='cw'?px:px+pw;
         const hy=floorY+netD*sc;
@@ -946,11 +1055,30 @@ function drawOpeningsOnFloor(sc,ox,oy,floorX,floorY,buildup){
       }
       fCtx.stroke(); fCtx.setLineDash([]);
 
-      // label
-      fCtx.fillStyle='rgba(20,40,100,.85)';
-      fCtx.font=`bold ${Math.max(11,Math.min(pw,ph)*FONT_SCALE*.25)}px sans-serif`;
-      fCtx.textAlign='center'; fCtx.textBaseline='middle';
-      fCtx.fillText(op.width+'',px+pw/2,py+ph/2);
+      // label: show width above threshold strip (in net area, near wall)
+      const lblText = (op.label||'') ? `${op.label}` : `${op.width}cm`;
+      fCtx.fillStyle='rgba(20,40,100,.92)';
+      fCtx.font=`bold ${Math.max(11,Math.min(pw*0.18,14))}px sans-serif`;
+      fCtx.textAlign='center'; fCtx.textBaseline='bottom';
+      // Position label inside net area just above the wall strip
+      let lblX=px+pw/2, lblY;
+      if(op.wall===1) lblY=floorY+netD*sc-4;          // above W1 strip
+      else if(op.wall===3) lblY=floorY+wtsc+4;
+      else if(op.wall===2) lblY=py+ph/2;
+      else lblY=py+ph/2;
+      fCtx.textBaseline='bottom';
+      if(op.wall===1||op.wall===3){
+        // Draw small label box
+        const m=fCtx.measureText(lblText);
+        fCtx.fillStyle='rgba(255,255,255,.85)';
+        fCtx.fillRect(lblX-m.width/2-3,lblY-14,m.width+6,14);
+        fCtx.fillStyle='rgba(20,40,100,.92)'; fCtx.fillText(lblText,lblX,lblY);
+      } else {
+        fCtx.fillStyle='rgba(20,40,100,.85)';
+        fCtx.font=`bold ${Math.max(10,Math.min(pw,ph)*FONT_SCALE*.22)}px sans-serif`;
+        fCtx.textAlign='center'; fCtx.textBaseline='middle';
+        fCtx.fillText(lblText,px+pw/2,py+ph/2);
+      }
     }
 
     if(isSel){
@@ -962,28 +1090,33 @@ function drawOpeningsOnFloor(sc,ox,oy,floorX,floorY,buildup){
 
 function drawThresholdOnFloor(sc,floorX,floorY,netW,netD){
   const t=state.threshold;
-  const {buildup}=getNetDims();
-  const bsc=buildup*sc;
-  const left=t.left||0, wid=t.width||6;
-  const w=netW-(t.left||0)-(t.right||0);
-  // Threshold sits in W1 wall strip, butted against door leaf outer face
-  // i.e., at bottom of net area going into wall strip
-  const doorLeafThick = (()=>{
-    const d=state.openings.find(op=>(op.type==='door'||op.type==='door75')&&op.wall===1);
-    return d?d.leafThick||4:0;
-  })();
-  // Threshold: from outer face of door leaf toward outside
-  // In plan: drawn just outside net area (in W1 strip), width = threshold width, height = wid
-  const py=floorY+netD*sc; // start of W1 strip
-  const ty=py+doorLeafThick*sc; // after door leaf
-  const tw2=Math.min(wid*sc, bsc-doorLeafThick*sc);
+  const {buildup,structural,wallTotal}=getNetDims();
+  const bsc=buildup*sc, ssc=structural*sc, wtsc=wallTotal*sc;
+  const wid=t.width||6;
+  const widsc=wid*sc;
+
+  // Auto-align with door on W1 if present, else full netW
+  const door=state.openings.find(op=>(op.type==='door'||op.type==='door75')&&op.wall===1);
+  const thLeft = door ? door.pos : 0;
+  const thW    = door ? door.width : netW;
+  const lt     = door ? (door.leafThick||4)*sc : 0;
+
+  // Threshold position: just outside door leaf (door leaf at py+bsc, leaf thickness lt)
+  const py=floorY+netD*sc;    // inner face of W1 strip
+  const ty=py+bsc+lt;          // after tile-adhesive layer and door leaf
+  const availH=ssc-lt;         // remaining depth in structural zone
+
+  const th=Math.min(widsc, Math.max(availH,3));
+  const tx=floorX+thLeft*sc;
+
   fCtx.fillStyle='#c9a96e';
-  fCtx.fillRect(floorX+left*sc, ty, w*sc, Math.max(tw2,2));
+  fCtx.fillRect(tx, ty, thW*sc, th);
   fCtx.strokeStyle='#a07040'; fCtx.lineWidth=1.5;
-  fCtx.strokeRect(floorX+left*sc, ty, w*sc, Math.max(tw2,2));
-  fCtx.fillStyle='rgba(0,0,0,.75)'; fCtx.font=`bold ${Math.max(10,Math.min(w*sc*.08,13))}px sans-serif`;
+  fCtx.strokeRect(tx, ty, thW*sc, th);
+  const lbl=t.label?`${t.label}(${wid}cm)`:`門檻${wid}cm`;
+  fCtx.fillStyle='rgba(0,0,0,.8)'; fCtx.font=`bold ${Math.max(9,Math.min(thW*sc*.07,12))}px sans-serif`;
   fCtx.textAlign='center'; fCtx.textBaseline='middle';
-  fCtx.fillText(`門檻 ${wid}cm`,floorX+left*sc+w*sc/2,ty+Math.max(tw2,2)/2);
+  fCtx.fillText(lbl, tx+thW*sc/2, ty+th/2);
 }
 
 function drawPlacedFixtures(sc,floorX,floorY){
@@ -1011,23 +1144,40 @@ function drawPlacedFixtures(sc,floorX,floorY){
 }
 
 function drawFloorDims(sc,ox,oy,W,D,PAD,netW,netD,buildup){
-  const bsc=buildup*sc;
-  fCtx.fillStyle='#445'; fCtx.font='bold 13px sans-serif'; fCtx.textAlign='center';
-  // outer room dims
-  fCtx.fillText(`${W} cm`,ox+W*sc/2,oy+D*sc+15);
-  fCtx.save(); fCtx.translate(ox+W*sc+15,oy+D*sc/2); fCtx.rotate(Math.PI/2);
-  fCtx.fillText(`${D} cm`,0,0); fCtx.restore();
-  // net dims (smaller, blue)
-  fCtx.fillStyle='rgba(26,106,245,.8)'; fCtx.font='9px sans-serif';
-  fCtx.fillText(`淨 ${netW.toFixed(1)}`,ox+bsc+netW*sc/2,oy+bsc+netD*sc+11);
-  fCtx.save(); fCtx.translate(ox+bsc+netW*sc+11,oy+bsc+netD*sc/2); fCtx.rotate(Math.PI/2);
-  fCtx.fillText(`淨 ${netD.toFixed(1)}`,0,0); fCtx.restore();
-  // wall labels
-  fCtx.font='bold 16px sans-serif'; fCtx.fillStyle='#1a3388';
-  fCtx.fillText('W3',ox+W*sc/2,oy-16);
-  fCtx.fillText('W1',ox+W*sc/2,oy+D*sc+28);
-  fCtx.save(); fCtx.translate(ox-18,oy+D*sc/2); fCtx.rotate(-Math.PI/2); fCtx.fillText('W2',0,0); fCtx.restore();
-  fCtx.save(); fCtx.translate(ox+W*sc+32,oy+D*sc/2); fCtx.rotate(Math.PI/2); fCtx.fillText('W4',0,0); fCtx.restore();
+  const {wallTotal,outerW,outerD}=getNetDims();
+  const wtsc=wallTotal*sc;
+  const owsc=outerW*sc, odsc=outerD*sc;
+  const fX=ox+wtsc, fY=oy+wtsc; // floorX/Y
+
+  // ── Outer structural dim (outside box) ──
+  fCtx.fillStyle='#445'; fCtx.font='bold 12px sans-serif'; fCtx.textAlign='center';
+  fCtx.fillText(`外${outerW.toFixed(0)}cm`, ox+owsc/2, oy+odsc+14);
+  // Right side: outer dim at +16 (close to wall), W4 label at +38 (further out)
+  fCtx.save(); fCtx.translate(ox+owsc+16, oy+odsc/2); fCtx.rotate(Math.PI/2);
+  fCtx.fillText(`外${outerD.toFixed(0)}cm`, 0, 0); fCtx.restore();
+
+  // ── Net (input) dims — inside net area, prominent ──
+  fCtx.fillStyle='#3a4050'; fCtx.font='bold 13px sans-serif'; fCtx.textAlign='center';
+  fCtx.fillText(`${netW}cm`, fX+netW*sc/2, fY+netD*sc-8);
+  fCtx.save(); fCtx.translate(fX+8, fY+netD*sc/2); fCtx.rotate(-Math.PI/2);
+  fCtx.fillText(`${netD}cm`, 0, 0); fCtx.restore();
+
+  // ── Wall labels ──
+  const drawWallLabel=(text,cx,cy,rot)=>{
+    fCtx.save(); fCtx.translate(cx,cy);
+    if(rot) fCtx.rotate(rot);
+    fCtx.font='bold 14px sans-serif'; fCtx.fillStyle='#1a3388';
+    fCtx.textAlign='center'; fCtx.textBaseline='middle';
+    const m=fCtx.measureText(text);
+    fCtx.fillStyle='rgba(255,255,255,.82)';
+    fCtx.fillRect(-m.width/2-3,-8,m.width+6,16);
+    fCtx.fillStyle='#1a3388'; fCtx.fillText(text,0,0);
+    fCtx.restore();
+  };
+  drawWallLabel('W3', ox+owsc/2, oy-13);
+  drawWallLabel('W1', ox+owsc/2, oy+odsc+26);
+  drawWallLabel('W2', ox-22, oy+odsc/2, -Math.PI/2);
+  drawWallLabel('W4', ox+owsc+52, oy+odsc/2, Math.PI/2);
 }
 
 // ============================
@@ -1038,15 +1188,14 @@ const wCtx=wallCanvas.getContext('2d');
 
 function drawWallExpand(){
   const {W,D,tileH}=state.room;
-  const {netW,netD,buildup}=getNetDims();
+  const {netW,netD,buildup,structural}=getNetDims();
   const tw=state.wallTile.w/10, th_t=state.wallTile.h/10;
   const grout=state.wallTile.grout/10;
   const stepX=tw+grout, stepY=th_t+grout;
   const layout=state.wallLayout;
   const wallH=tileH;
-  const SC=1.4, PAD=28, GAP=18;
+  const SC=1.5, PAD=32, GAP=22;
 
-  // Wall lengths use net dims (after buildup deducted on both sides)
   const walls=[
     {id:'W1',len:netW,label:`W1 (淨${netW.toFixed(1)})`,offKey:'w1'},
     {id:'W2',len:netD,label:`W2 (淨${netD.toFixed(1)})`,offKey:'w2'},
@@ -1055,11 +1204,25 @@ function drawWallExpand(){
   ];
 
   const totalW=walls.reduce((a,wl)=>a+Math.ceil(wl.len*SC)+GAP,0)+PAD*2;
-  const totalH=Math.ceil(wallH*SC)+PAD*2+50;
-  wallCanvas.width=Math.max(400,totalW);
-  wallCanvas.height=Math.max(180,totalH);
+  const totalH=Math.ceil(wallH*SC)+PAD*2+70;
+  wallCanvas.width=Math.max(500,totalW);
+  wallCanvas.height=Math.max(220,totalH);
   wCtx.clearRect(0,0,wallCanvas.width,wallCanvas.height);
   wCtx.fillStyle='#e4e8ef'; wCtx.fillRect(0,0,wallCanvas.width,wallCanvas.height);
+
+  // Helper: draw text with white background box
+  function labelBox(ctx,text,cx,cy,fontSize=13,color='#1a3388'){
+    ctx.save();
+    ctx.font=`bold ${fontSize}px sans-serif`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    const m=ctx.measureText(text);
+    const bw=m.width+8, bh=fontSize+6;
+    ctx.fillStyle='rgba(255,255,255,.88)';
+    ctx.fillRect(cx-bw/2,cy-bh/2,bw,bh);
+    ctx.fillStyle=color;
+    ctx.fillText(text,cx,cy);
+    ctx.restore();
+  }
 
   let wFull=0,wCut=0;
   let curX=PAD;
@@ -1069,58 +1232,162 @@ function drawWallExpand(){
     const offVert=(state.offset[wall.offKey]+state.offset.all)/10;
     const offHoriz=state.offset.x/10;
     const pH=Math.ceil(wallH*SC), pW=Math.ceil(wLen*SC);
-    const px=curX, py=PAD+24;
+    const px=curX, py=PAD+28;
+    const wallOpenings=state.openings.filter(op=>op.wall===(wi+1)&&op.type!=='drain');
 
     wCtx.fillStyle='#fff'; wCtx.fillRect(px,py,pW,pH);
-
     wCtx.save();
     wCtx.beginPath(); wCtx.rect(px,py,pW,pH); wCtx.clip();
 
-    const ox0=offHoriz%stepX, oy0=offVert%stepY;
+    // ── TILE GRID: start from BOTTOM (ground level), whole tiles first ──
+    // Coordinate: ry=0 at bottom (ground), ry increases upward
+    // Canvas: tpy = py + pH - (ry+th_t)*SC  (invert y)
+    // Start offset: offVert shifts the grid; oy0 = first tile bottom edge from floor
+    const oy0 = offVert>=0 ? offVert%stepY : stepY-((-offVert)%stepY);
+    const ox0 = offHoriz>=0 ? offHoriz%stepX : stepX-((-offHoriz)%stepX);
+
+    // Build list of openings in cm coords for tile exclusion/cut logic
+    const opZones=wallOpenings.map(op=>{
+      if(op.type==='window'){
+        const sillBot=op.sill||80;
+        const winBot=sillBot+(op.height||120);  // top of window from floor
+        return {x0:op.pos,x1:op.pos+op.width,y0:sillBot,y1:winBot, type:'window'};
+      } else {
+        return {x0:op.pos,x1:op.pos+op.width,y0:0,y1:op.height||210, type:'door'};
+      }
+    });
+
     const numCols=Math.ceil((wLen-ox0)/stepX)+3;
     const numRows=Math.ceil((wallH-oy0)/stepY)+3;
 
     for(let r=-1;r<numRows;r++){
       for(let c=-1;c<numCols;c++){
-        let rx=ox0+c*stepX, ry=oy0+r*stepY;
+        let rx=ox0+c*stepX;
+        let ry=oy0+r*stepY; // ry = distance from floor (bottom)
+
         if(layout==='h_half') rx+=(r%2===0?0:stepX/2);
         else if(layout==='h_third') rx+=(r%3)*stepX/3;
         else if(layout==='v_half') ry+=(c%2===0?0:stepY/2);
         else if(layout==='v_third') ry+=(c%3)*stepY/3;
-        const isOut=rx+tw<=0||rx>=wLen||ry+th_t<=0||ry>=wallH;
-        if(isOut) continue;
-        const isFull=rx>=0&&ry>=0&&rx+tw<=wLen&&ry+th_t<=wallH;
-        if(isFull){wFull++;wCtx.fillStyle='#6fa8dc';}
-        else{wCut++;wCtx.fillStyle='#e06c4a';}
-        const tpx=px+rx*SC, tpy=py+ry*SC, tpw=tw*SC, tph=th_t*SC;
+
+        // tile bounds in cm (from floor)
+        const tLeft=rx, tRight=rx+tw;
+        const tBot=ry, tTop=ry+th_t;
+
+        if(tRight<=0||tLeft>=wLen||tTop<=0||tBot>=wallH) continue;
+
+        // Check if FULLY inside any opening → skip (opening void)
+        let fullyInOpening=false;
+        for(const z of opZones){
+          if(tLeft>=z.x0&&tRight<=z.x1&&tBot>=z.y0&&tTop<=z.y1){fullyInOpening=true;break;}
+        }
+        if(fullyInOpening) continue;
+
+        // Determine tile visibility type:
+        // - fully inside wall bounds AND not overlapping any opening edge → full or cut (wall boundary)
+        // - overlapping opening edge (partially in opening) → cut tile
+        let overlapOpening=false;
+        for(const z of opZones){
+          const xOverlap=tLeft<z.x1&&tRight>z.x0;
+          const yOverlap=tBot<z.y1&&tTop>z.y0;
+          if(xOverlap&&yOverlap){overlapOpening=true;break;}
+        }
+
+        const wallCut=tLeft<0||tRight>wLen||tBot<0||tTop>wallH;
+        const isCut=wallCut||overlapOpening;
+        if(isCut){wCut++;wCtx.fillStyle='#e06c4a';}
+        else{wFull++;wCtx.fillStyle='#6fa8dc';}
+
+        // Canvas Y: invert (ry=0 at bottom → tpy near bottom of wall rect)
+        const tpx=px+Math.max(0,rx)*SC;
+        const tpy=py+pH-Math.min(tTop,wallH)*SC;
+        const tpw=(Math.min(tRight,wLen)-Math.max(tLeft,0))*SC;
+        const tph=(Math.min(tTop,wallH)-Math.max(tBot,0))*SC;
+
+        if(tpw<0.5||tph<0.5) continue;
         wCtx.fillRect(tpx+.5,tpy+.5,tpw-1,tph-1);
-        wCtx.strokeStyle='rgba(255,255,255,.4)'; wCtx.lineWidth=.5;
+        wCtx.strokeStyle='rgba(255,255,255,.45)'; wCtx.lineWidth=.5;
         wCtx.strokeRect(tpx+.5,tpy+.5,tpw-1,tph-1);
-        if(tpw>16&&tph>12){
-          wCtx.fillStyle='rgba(0,0,0,.3)'; wCtx.font=`${Math.min(9,tph*.38)}px sans-serif`;
+        // tile number (only full tiles, not cut)
+        if(!isCut&&tpw>18&&tph>13){
+          wCtx.fillStyle='rgba(0,0,0,.28)'; wCtx.font=`${Math.min(9,tph*.36)}px sans-serif`;
           wCtx.textAlign='center'; wCtx.textBaseline='middle';
           wCtx.fillText((r+2)*(numCols+2)+(c+2)+1,tpx+tpw/2,tpy+tph/2);
         }
       }
     }
 
-    state.openings.filter(op=>op.wall===(wi+1)).forEach(op=>{
-      const opPx=px+op.pos*SC, opPh=(op.height||90)*SC*.9;
-      const opPw=op.width*SC, opPy=py+pH-opPh;
-      wCtx.fillStyle='rgba(195,215,240,.85)'; wCtx.fillRect(opPx,opPy,opPw,opPh);
-      wCtx.strokeStyle='#3a6aa0'; wCtx.lineWidth=1.5; wCtx.strokeRect(opPx,opPy,opPw,opPh);
-      wCtx.fillStyle='#1a4080'; wCtx.font='bold 13px sans-serif'; wCtx.textAlign='center'; wCtx.textBaseline='middle';
-      wCtx.fillText(op.type==='window'?'窗':'門',opPx+opPw/2,opPy+opPh/2);
+    // ── DRAW OPENINGS ──
+    wallOpenings.forEach(op=>{
+      const opPx=px+op.pos*SC;
+      const opPw=op.width*SC;
+      let opY,opH;
+      if(op.type==='window'){
+        const sillH=(op.sill||80)*SC;
+        opH=(op.height||120)*SC;
+        opY=py+pH-sillH-opH; // canvas Y from top
+      } else {
+        opH=(op.height||210)*SC;
+        opY=py+pH-opH;
+      }
+      opY=Math.max(py,opY);
+      opH=Math.min(opH,py+pH-opY);
+
+      if(op.type==='window'){
+        wCtx.fillStyle='rgba(195,230,255,.92)';
+        wCtx.fillRect(opPx,opY,opPw,opH);
+        wCtx.strokeStyle='#2a608a'; wCtx.lineWidth=2; wCtx.strokeRect(opPx,opY,opPw,opH);
+        wCtx.strokeStyle='rgba(42,96,138,.35)'; wCtx.lineWidth=1;
+        wCtx.beginPath(); wCtx.moveTo(opPx+opPw/2,opY); wCtx.lineTo(opPx+opPw/2,opY+opH); wCtx.stroke();
+      } else {
+        wCtx.fillStyle='rgba(220,232,255,.92)';
+        wCtx.fillRect(opPx,opY,opPw,opH);
+        wCtx.strokeStyle='#3a5a9a'; wCtx.lineWidth=2; wCtx.strokeRect(opPx,opY,opPw,opH);
+      }
+      // Opening label with white box
+      const lbl=op.label||(op.type==='window'?'窗':'門');
+      const dimLbl=`${lbl} ${op.width}cm`;
+      labelBox(wCtx, dimLbl, opPx+opPw/2, opY+opH/2, 13, '#1a3388');
+
+      // Window sill zone label
+      if(op.type==='window'&&(op.sill||0)>0){
+        const sillPx=py+pH-(op.sill||80)*SC;
+        wCtx.strokeStyle='rgba(180,150,80,.4)'; wCtx.lineWidth=1; wCtx.setLineDash([3,2]);
+        wCtx.beginPath(); wCtx.moveTo(opPx,sillPx); wCtx.lineTo(opPx+opPw,sillPx); wCtx.stroke();
+        wCtx.setLineDash([]);
+        labelBox(wCtx,`台高${op.sill}cm`,opPx+opPw/2,sillPx-8,10,'#8a6020');
+      }
+
+      // Door/window width dimension line at top of opening
+      const dimY=opY-14;
+      if(dimY>py-2){
+        wCtx.strokeStyle='#1a3388'; wCtx.lineWidth=1.2;
+        wCtx.beginPath(); wCtx.moveTo(opPx,dimY+6); wCtx.lineTo(opPx,dimY);
+        wCtx.lineTo(opPx+opPw,dimY); wCtx.lineTo(opPx+opPw,dimY+6); wCtx.stroke();
+        labelBox(wCtx,`${op.width}cm`,opPx+opPw/2,dimY-8,12,'#1a3388');
+      }
     });
 
     wCtx.restore();
 
-    wCtx.strokeStyle='#1a3a88'; wCtx.lineWidth=2; wCtx.strokeRect(px,py,pW,pH);
-    wCtx.fillStyle='#1a3a88'; wCtx.font='bold 14px sans-serif'; wCtx.textAlign='center';
-    wCtx.fillText(wall.label,px+pW/2,py-9);
-    wCtx.fillStyle='#555'; wCtx.font='9px sans-serif';
-    wCtx.fillText(`原始:${[W,D,W,D][wi]}cm 佔${buildup.toFixed(1)}×2`,px+pW/2,py+pH+12);
-    wCtx.fillText(`高:${wallH}cm`,px+pW/2,py+pH+24);
+    // ── BORDER ──
+    wCtx.strokeStyle='#1a3a88'; wCtx.lineWidth=2.5; wCtx.strokeRect(px,py,pW,pH);
+
+    // ── WALL LABEL (large, white box) ──
+    labelBox(wCtx, wall.label, px+pW/2, py-16, 15, '#1a3388');
+
+    // ── BOTTOM DIM: wall width + height ──
+    labelBox(wCtx, `淨${wLen.toFixed(1)}cm × 高${wallH}cm`, px+pW/2, py+pH+16, 11, '#445');
+
+    // ── Dimension arrows on sides ──
+    // Left side height
+    wCtx.strokeStyle='#666'; wCtx.lineWidth=1;
+    wCtx.beginPath(); wCtx.moveTo(px-10,py); wCtx.lineTo(px-10,py+pH); wCtx.stroke();
+    wCtx.beginPath(); wCtx.moveTo(px-14,py+4); wCtx.lineTo(px-10,py); wCtx.lineTo(px-6,py+4); wCtx.stroke();
+    wCtx.beginPath(); wCtx.moveTo(px-14,py+pH-4); wCtx.lineTo(px-10,py+pH); wCtx.lineTo(px-6,py+pH-4); wCtx.stroke();
+    wCtx.save(); wCtx.translate(px-22,py+pH/2); wCtx.rotate(-Math.PI/2);
+    labelBox(wCtx,`${wallH}cm`,0,0,11,'#445');
+    wCtx.restore();
 
     curX+=pW+GAP;
   });
@@ -1132,12 +1399,140 @@ function drawWallExpand(){
 }
 
 // ============================
+// OPENINGS LIST
+// ============================
+function updateOpeningsList(){
+  const panel=$('openingsListPanel');
+  const container=$('openingsListContainer');
+  const items=state.openings.filter(op=>op.type!=='drain');
+  const hasThresh=!!state.threshold;
+  if(items.length===0&&!hasThresh){panel.style.display='none';return;}
+  panel.style.display='';
+  container.innerHTML='';
+  items.forEach((op,i)=>{
+    const typeLabel=op.type==='window'?'窗':(op.type==='drain'?'排':'門');
+    const badgeCls=op.type==='window'?'win':'';
+    const div=document.createElement('div');
+    div.className='opening-list-item';
+    const wallName=['','W1(下)','W2(左)','W3(上)','W4(右)'][op.wall]||'';
+    const info=op.type==='window'
+      ?`${op.label||'窗'} | ${wallName} 位${op.pos}cm 寬${op.width}cm 台高${op.sill||0}cm`
+      :`${op.label||'門'} | ${wallName} 位${op.pos}cm 寬${op.width}cm 高${op.height||210}cm`;
+    div.innerHTML=`<span class="opening-badge ${badgeCls}">${typeLabel}</span>
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${info}</span>
+      <button class="btn btn-sm" data-edit="${i}" style="padding:2px 6px;font-size:11px">✏</button>
+      <button class="btn btn-sm btn-danger" data-remove="${i}" style="padding:2px 6px;font-size:11px">✕</button>`;
+    div.querySelector('[data-remove]').addEventListener('click',()=>{
+      state.openings.splice(i,1); render();
+    });
+    div.querySelector('[data-edit]').addEventListener('click',()=>{
+      // Re-open appropriate modal prefilled
+      if(op.type==='window'){
+        $('winWidth').value=op.width; $('winSill').value=op.sill||80;
+        $('winHeight').value=op.height||120; $('winWall').value=op.wall;
+        $('winPos').value=op.pos; $('winLabel').value=op.label||'';
+        state._editOpeningIdx=i;
+        $('windowModal').classList.add('open');
+      } else {
+        $('doorWidth').value=op.width; $('doorHeight').value=op.height||210;
+        $('doorLeafThick').value=op.leafThick||4; $('doorWall').value=op.wall;
+        $('doorPos').value=op.pos; $('doorSwing').value=op.swing||'cw';
+        $('doorLabel').value=op.label||''; state._doorModalType=op.type;
+        state._editOpeningIdx=i;
+        $('doorModal').classList.add('open');
+      }
+    });
+    container.appendChild(div);
+  });
+  if(hasThresh){
+    const div=document.createElement('div');
+    div.className='opening-list-item';
+    div.innerHTML=`<span class="opening-badge thresh">檻</span>
+      <span style="flex:1">${state.threshold.label||'門檻'} | 寬${state.threshold.width}cm</span>
+      <button class="btn btn-sm" id="editThreshBtn" style="padding:2px 6px;font-size:11px">✏</button>
+      <button class="btn btn-sm btn-danger" id="removeThreshBtn2" style="padding:2px 6px;font-size:11px">✕</button>`;
+    div.querySelector('#editThreshBtn').addEventListener('click',()=>{
+      $('threshLeft').value=state.threshold.left||0;
+      $('threshRight').value=state.threshold.right||0;
+      $('threshWid').value=state.threshold.width||6;
+      $('threshLabel').value=state.threshold.label||'';
+      $('threshModal').classList.add('open');
+    });
+    div.querySelector('#removeThreshBtn2').addEventListener('click',()=>{state.threshold=null;render()});
+    container.appendChild(div);
+  }
+}
+
+// Handle edit mode for door/window modal (overwrite existing instead of push)
+function patchModalApplyForEdit(){
+  // patch doorModalApply to handle edit
+  const origDoorApply=$('doorModalApply').onclick;
+  $('doorModalApply').addEventListener('click',()=>{
+    if(state._editOpeningIdx!=null){
+      const i=state._editOpeningIdx;
+      const wall=+$('doorWall').value, width=+$('doorWidth').value;
+      const {netW,netD}=getNetDims();
+      const maxLen=wall===1||wall===3?netW:netD;
+      state.openings[i]={...state.openings[i], wall, pos:Math.min(+$('doorPos').value,maxLen-width),
+        width, height:+$('doorHeight').value||210, swing:$('doorSwing').value,
+        leafThick:+$('doorLeafThick').value, label:$('doorLabel').value||''};
+      state._editOpeningIdx=null; $('doorModal').classList.remove('open'); render(); updateOpeningsList();
+    }
+  },true);
+  $('winModalApply').addEventListener('click',()=>{
+    if(state._editOpeningIdx!=null){
+      const i=state._editOpeningIdx;
+      const wall=+$('winWall').value, width=+$('winWidth').value;
+      const {netW,netD}=getNetDims();
+      const maxLen=wall===1||wall===3?netW:netD;
+      state.openings[i]={...state.openings[i], wall, pos:Math.min(+$('winPos').value,maxLen-width),
+        width, height:+$('winHeight').value, sill:+$('winSill').value, label:$('winLabel').value||''};
+      state._editOpeningIdx=null; $('windowModal').classList.remove('open'); render(); updateOpeningsList();
+    }
+  },true);
+}
+
+// ============================
+// DRAGGABLE MODALS
+// ============================
+function initDraggableModals(){
+  document.querySelectorAll('.draggable-modal').forEach(modal=>{
+    const handle=modal.querySelector('.drag-handle');
+    if(!handle) return;
+    let dragging=false, ox=0, oy=0, startX=0, startY=0;
+    handle.addEventListener('mousedown',e=>{
+      if(e.target.tagName==='SELECT'||e.target.tagName==='INPUT'||e.target.tagName==='BUTTON') return;
+      dragging=true;
+      const rect=modal.getBoundingClientRect();
+      // Convert to fixed positioning
+      if(!modal.style.position||modal.style.position!=='fixed'){
+        modal.style.position='fixed';
+        modal.style.top=rect.top+'px';
+        modal.style.left=rect.left+'px';
+        modal.style.margin='0';
+      }
+      ox=parseFloat(modal.style.left)||rect.left;
+      oy=parseFloat(modal.style.top)||rect.top;
+      startX=e.clientX; startY=e.clientY;
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove',e=>{
+      if(!dragging) return;
+      modal.style.left=(ox+(e.clientX-startX))+'px';
+      modal.style.top=(oy+(e.clientY-startY))+'px';
+    });
+    document.addEventListener('mouseup',()=>{dragging=false});
+  });
+}
+
+// ============================
 // RENDER
 // ============================
 function render(){
   drawFloor();
   drawWallExpand();
   updatePlacedList();
+  updateOpeningsList();
 }
 
 // ============================
@@ -1146,10 +1541,9 @@ function render(){
 function getCanvasXY(e){
   const rect=floorCanvas.getBoundingClientRect();
   const sc=getScale(), PAD=32;
-  const {buildup}=getNetDims();
-  const bsc=buildup*sc;
-  // return coords in net space (inside wall buildup)
-  return { cx:(e.clientX-rect.left-PAD-bsc)/sc, cy:(e.clientY-rect.top-PAD-bsc)/sc };
+  const {wallTotal}=getNetDims();
+  const wtsc=wallTotal*sc;
+  return { cx:(e.clientX-rect.left-PAD-wtsc)/sc, cy:(e.clientY-rect.top-PAD-wtsc)/sc };
 }
 
 function hitTestOpening(cx,cy){
@@ -1161,12 +1555,13 @@ function hitTestOpening(cx,cy){
       if(Math.abs(cx-dx)<r&&Math.abs(cy-dy)<r) return i;
       continue;
     }
-    // Opening in wall strip
+    // Opening spans full wall strip (structural + buildup)
+    const {wallTotal:wt2}=getNetDims();
     let bx,by,bw,bh;
-    if(op.wall===1){bx=op.pos;by=netD;bw=op.width;bh=buildup;}
-    else if(op.wall===3){bx=op.pos;by=-buildup;bw=op.width;bh=buildup;}
-    else if(op.wall===2){bx=-buildup;by=op.pos;bw=buildup;bh=op.width;}
-    else{bx=netW;by=op.pos;bw=buildup;bh=op.width;}
+    if(op.wall===1){bx=op.pos;by=netD;bw=op.width;bh=wt2;}
+    else if(op.wall===3){bx=op.pos;by=-wt2;bw=op.width;bh=wt2;}
+    else if(op.wall===2){bx=-wt2;by=op.pos;bw=wt2;bh=op.width;}
+    else{bx=netW;by=op.pos;bw=wt2;bh=op.width;}
     if(cx>=bx&&cx<=bx+bw&&cy>=by&&cy<=by+bh) return i;
   }
   return -1;
@@ -1362,7 +1757,7 @@ function updatePlacedList(){
 function bindAll(){
   // Room
   bindNum('roomW','W','room'); bindNum('roomD','D','room');
-  bindNum('wallH','wallH','room'); bindNum('tileH','tileH','room'); bindNum('trimW','trimW','room');
+  bindNum('wallH','wallH','room'); bindNum('tileH','tileH','room'); bindNum('trimW','trimW','room'); bindNum('structThick','structThick','room');
   bindTxt('wallTileModel','model','wallTile'); bindNum('wallTileW','w','wallTile'); bindNum('wallTileH','h','wallTile');
   bindNum('wallGrout','grout','wallTile'); bindTxt('wallGroutModel','groutModel','wallTile');
   bindNum('wallTileThick','thickness','wallTile'); bindNum('wallAdhesive','adhesive','wallTile');
@@ -1380,6 +1775,9 @@ function bindAll(){
   [['col_tl_w','tl','w'],['col_tl_d','tl','d'],['col_tr_w','tr','w'],['col_tr_d','tr','d'],
    ['col_bl_w','bl','w'],['col_bl_d','bl','d'],['col_br_w','br','w'],['col_br_d','br','d']].forEach(([id,corner,prop])=>{
     $(id).addEventListener('change',()=>{state.columns[corner][prop]=+$(id).value;render()});
+  });
+  ['tl','tr','bl','br'].forEach(c=>{
+    $(`col_${c}_type`).addEventListener('change',()=>{state.columns[c].type=$(`col_${c}_type`).value;render()});
   });
 
   // Sliders
@@ -1428,10 +1826,15 @@ function bindAll(){
     const {netW,netD}=getNetDims();
     const maxLen=wall===1||wall===3?netW:netD;
     state.openings.push({
-      type:state._doorModalType||'door', wall, pos:Math.min(+$('doorPos').value,maxLen-width),
-      width, height:0, swing:$('doorSwing').value, leafThick:+$('doorLeafThick').value
+      type:state._doorModalType||'door', wall,
+      pos:Math.min(+$('doorPos').value,maxLen-width),
+      width, height:+$('doorHeight').value||210,
+      swing:$('doorSwing').value,
+      leafThick:+$('doorLeafThick').value,
+      label:$('doorLabel').value||''
     });
-    $('doorModal').classList.remove('open'); render();
+    $('doorLabel').value='';
+    $('doorModal').classList.remove('open'); render(); updateOpeningsList();
   });
 
   // Window modal
@@ -1443,9 +1846,11 @@ function bindAll(){
     const maxLen=wall===1||wall===3?netW:netD;
     state.openings.push({
       type:'window', wall, pos:Math.min(+$('winPos').value,maxLen-width),
-      width, height:+$('winHeight').value, sill:+$('winSill').value
+      width, height:+$('winHeight').value, sill:+$('winSill').value,
+      label:$('winLabel').value||''
     });
-    $('windowModal').classList.remove('open'); render();
+    $('winLabel').value='';
+    $('windowModal').classList.remove('open'); render(); updateOpeningsList();
   });
 
   // Drain modal
@@ -1484,11 +1889,12 @@ function bindAll(){
   $('addThreshold').addEventListener('click',openThreshModal);
   $('threshCancel').addEventListener('click',()=>$('threshModal').classList.remove('open'));
   $('threshApply').addEventListener('click',()=>{
-    state.threshold={left:+$('threshLeft').value,right:+$('threshRight').value,width:+$('threshWid').value};
-    $('threshModal').classList.remove('open'); render();
+    state.threshold={
+      width:+$('threshWid').value, label:$('threshLabel').value||''
+    };
+    $('threshModal').classList.remove('open'); render(); updateOpeningsList();
   });
-  $('threshRemove').addEventListener('click',()=>{state.threshold=null;$('threshModal').classList.remove('open');render()});
-
+  $('threshRemove').addEventListener('click',()=>{state.threshold=null;$('threshModal').classList.remove('open');render();updateOpeningsList()});
   // Fixture library
   $('addFixtureFileBtn').addEventListener('click',()=>$('fixtureFileInput').click());
   $('fixtureFileInput').addEventListener('change',e=>{
@@ -1686,7 +2092,7 @@ function syncUI(){
   const s=state;
   ['roomW','roomD','wallH','tileH','trimW'].forEach(id=>{const k=id.replace('room','');$(id).value=s.room[k.toLowerCase()]??s.room[k]??0});
   $('roomW').value=s.room.W;$('roomD').value=s.room.D;$('wallH').value=s.room.wallH;
-  $('tileH').value=s.room.tileH;$('trimW').value=s.room.trimW;
+  $('tileH').value=s.room.tileH;$('trimW').value=s.room.trimW;$('structThick').value=s.room.structThick??15;
   $('wallTileModel').value=s.wallTile.model||'';$('wallTileW').value=s.wallTile.w;$('wallTileH').value=s.wallTile.h;
   $('wallGrout').value=s.wallTile.grout;$('wallGroutModel').value=s.wallTile.groutModel||'';
   $('wallTileThick').value=s.wallTile.thickness??10;$('wallAdhesive').value=s.wallTile.adhesive??6;
@@ -1703,6 +2109,9 @@ function syncUI(){
   [['col_tl_w','tl','w'],['col_tl_d','tl','d'],['col_tr_w','tr','w'],['col_tr_d','tr','d'],
    ['col_bl_w','bl','w'],['col_bl_d','bl','d'],['col_br_w','br','w'],['col_br_d','br','d']].forEach(([id,corner,prop])=>{
     $(id).value=s.columns[corner][prop]||0;
+  });
+  ['tl','tr','bl','br'].forEach(c=>{
+    $(`col_${c}_type`).value=s.columns[c].type||'col';
   });
 }
 
@@ -1754,6 +2163,8 @@ function exportSVG(){
 // ============================
 bindAll();
 renderFixtureList();
+initDraggableModals();
+patchModalApplyForEdit();
 render();
 let _rt;
 window.addEventListener('resize',()=>{clearTimeout(_rt);_rt=setTimeout(render,200)});
